@@ -1,0 +1,25 @@
+name: everyjapan
+services:
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_USER_PASS}
+    ports:
+      - "3307:3306"  # 기본값, 충돌시 override
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  tomcat:
+    image: tomcat:9.0-jre8
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./WebContent:/usr/local/tomcat/webapps/ROOT
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
