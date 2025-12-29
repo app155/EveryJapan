@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./WebContent:/usr/local/tomcat/webapps/ROOT
+      - ./src/main/webapp:/usr/local/tomcat/webapps/ROOT
     depends_on:
       - mariadb
 
