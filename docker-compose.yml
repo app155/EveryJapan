@@ -13,6 +13,8 @@ services:
       MARIADB_USER: user         # 애플리케이션에서 사용할 사용자 이름
       MARIADB_PASSWORD: 1234      # 애플리케이션 사용자 비밀번호
       TZ: Asia/Tokyo
+    ports:
+      - "3307:3306"  # 로컬 MySQL과 충돌 방지
     volumes:
       # 데이터를 영구적으로 저장하기 위한 볼륨 설정
       - globalin-db-data:/var/lib/mysql
@@ -66,7 +68,7 @@ services:
     depends_on:
       - backend
     environment:
-      - TZ: Asia/Tokyo
+      TZ: Asia/Tokyo
     networks:
       - globalin-network
     restart: unless-stopped
