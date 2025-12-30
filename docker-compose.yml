@@ -16,8 +16,9 @@ services:
     ports:
       - "3307:3306"  # 로컬 MySQL과 충돌 방지
     volumes:
+      - ./backend/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
       # 데이터를 영구적으로 저장하기 위한 볼륨 설정
-      - globalin-db-data:/var/lib/mysql
+      # - globalin-db-data:/var/lib/mysql
     networks:
       - globalin-network
     restart: unless-stopped
