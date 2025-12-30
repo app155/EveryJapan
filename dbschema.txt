@@ -1,0 +1,477 @@
+-- =====================================================
+-- EveryJapan 2025_IT_5기_팀_포로리 완전 DB 스키마 (31개 테이블)
+-- CSV 파일 기반 정확한 스펙으로 생성
+-- MariaDB 호환, FK 순서 고려
+-- =====================================================
+
+CREATE DATABASE IF NOT EXISTS everyjapan CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE everyjapan;
+
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+
+-- =====================================================
+-- 1. universities (먼저 생성 - users가 참조)
+CREATE TABLE universities (
+    university_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    name_en VARCHAR(100),
+    location VARCHAR(100),
+    type VARCHAR(20),
+    email_domain VARCHAR(50),
+    website VARCHAR(255),
+    INDEX idx_name (name),
+    INDEX idx_email_domain (email_domain)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. users
+CREATE TABLE users (
+    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    university BIGINT NOT NULL,
+    grade INT,
+    email_verificated BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    major VARCHAR(100),
+    student_id VARCHAR(20),
+    profile_image VARCHAR(255),
+    status VARCHAR(20),
+    FOREIGN KEY (university) REFERENCES universities(university_id),
+    UNIQUE KEY uk_email (email),
+    INDEX idx_username (username),
+    INDEX idx_email_verificated (email_verificated)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. user_profiles
+CREATE TABLE user_profiles (
+    profile_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    interests TEXT,
+    is_public BOOLEAN DEFAULT TRUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    languages VARCHAR(200),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_is_public (is_public)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. auth_tokens
+CREATE TABLE auth_tokens (
+    token_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    expires_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    access_token VARCHAR(500),
+    refresh_token VARCHAR(500),
+    device_info VARCHAR(200),
+    ip_address VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_expires_at (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. email_verifications
+CREATE TABLE email_verifications (
+    verification_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    expires_at TIMESTAMP,
+    verified_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    email VARCHAR(100) NOT NULL,
+    verification_code VARCHAR(10),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. password_reset
+CREATE TABLE password_reset (
+    reset_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    expires_at TIMESTAMP,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reset_token VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_reset_token (reset_token)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 7. login_history
+CREATE TABLE login_history (
+    history_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    success BOOLEAN,
+    ip_address VARCHAR(50),
+    device_info VARCHAR(200),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_login_at (login_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 8. posts
+CREATE TABLE posts (
+    post_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    content TEXT,
+    view_count INT DEFAULT 0,
+    like_count INT DEFAULT 0,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    author BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    title VARCHAR(200),
+    category VARCHAR(20),
+    anonymous_id VARCHAR(50),
+    FOREIGN KEY (author) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_author (author),
+    INDEX idx_category (category),
+    INDEX idx_is_anonymous (is_anonymous),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 9. post_tags
+CREATE TABLE post_tags (
+    tag_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id BIGINT NOT NULL,
+    tag_name VARCHAR(30) NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    INDEX idx_post_id (post_id),
+    INDEX idx_tag_name (tag_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 10. post_likes
+CREATE TABLE post_likes (
+    like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_post_user (post_id, user_id),
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 11. comments
+CREATE TABLE comments (
+    comment_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    parent_comment_id BIGINT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_parent_comment_id (parent_comment_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 12. chat_rooms
+CREATE TABLE chat_rooms (
+    room_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    last_message_at TIMESTAMP NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    room_name VARCHAR(100),
+    room_type VARCHAR(20),
+    INDEX idx_room_type (room_type),
+    INDEX idx_last_message_at (last_message_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 13. chat_members
+CREATE TABLE chat_members (
+    member_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    room_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    last_read_at TIMESTAMP NULL,
+    notification_enabled BOOLEAN DEFAULT TRUE,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    nickname VARCHAR(50),
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_room_user (room_id, user_id),
+    INDEX idx_room_id (room_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 14. messages
+CREATE TABLE messages (
+    message_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    room_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    content TEXT,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    is_delete BOOLEAN DEFAULT FALSE,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    edited_at TIMESTAMP NULL,
+    message_type VARCHAR(20),
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_room_id (room_id),
+    INDEX idx_sender_id (sender_id),
+    INDEX idx_sent_at (sent_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 15. message_reads
+CREATE TABLE message_reads (
+    read_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    message_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    read_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_message_user (message_id, user_id),
+    INDEX idx_message_id (message_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 16. anonymous_sessions
+CREATE TABLE anonymous_sessions (
+    session_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    room_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,
+    anonymous_nickname VARCHAR(50),
+    anonymous_color VARCHAR(20),
+    FOREIGN KEY (room_id) REFERENCES chat_rooms(room_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_room_id (room_id),
+    INDEX idx_expires_at (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 17. meetings
+CREATE TABLE meetings (
+    meeting_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    organizer_id BIGINT NOT NULL,
+    university_id BIGINT NOT NULL,
+    description TEXT,
+    max_participants INT,
+    current_participants INT DEFAULT 0,
+    meeting_date TIMESTAMP,
+    deadline TIMESTAMP,
+    is_open_to_other_univ BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(200),
+    category VARCHAR(20),
+    location VARCHAR(200),
+    status VARCHAR(20),
+    FOREIGN KEY (organizer_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (university_id) REFERENCES universities(university_id),
+    INDEX idx_organizer_id (organizer_id),
+    INDEX idx_university_id (university_id),
+    INDEX idx_meeting_date (meeting_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 18. meeting_participants
+CREATE TABLE meeting_participants (
+    participant_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    meeting_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    message TEXT,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20),
+    FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_meeting_id (meeting_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 19. meeting_reviews
+CREATE TABLE meeting_reviews (
+    review_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    meeting_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    rating INT,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_meeting_id (meeting_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 20. meeting_comments
+CREATE TABLE meeting_comments (
+    comment_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    meeting_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_meeting_id (meeting_id),
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 21. files
+CREATE TABLE files (
+    file_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    uploader_id BIGINT NOT NULL,
+    file_size BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    file_name VARCHAR(255) NOT NULL,
+    file_type VARCHAR(20),
+    mime_type VARCHAR(100),
+    storage_path VARCHAR(500),
+    thumbnail_path VARCHAR(500),
+    upload_status VARCHAR(20) DEFAULT 'PENDING',
+    FOREIGN KEY (uploader_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_uploader_id (uploader_id),
+    INDEX idx_upload_status (upload_status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 22. post_files
+CREATE TABLE post_files (
+    post_file_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    display_order INT DEFAULT 0,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (file_id) REFERENCES files(file_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_post_file (post_id, file_id),
+    INDEX idx_post_id (post_id),
+    INDEX idx_file_id (file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 23. profile_images
+CREATE TABLE profile_images (
+    profile_image_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    is_active BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (file_id) REFERENCES files(file_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_user_active_image (user_id, is_active),
+    INDEX idx_user_id (user_id),
+    INDEX idx_is_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 24. message_files
+CREATE TABLE message_files (
+    message_file_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    message_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
+    FOREIGN KEY (file_id) REFERENCES files(file_id) ON DELETE CASCADE,
+    INDEX idx_message_id (message_id),
+    INDEX idx_file_id (file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 25. notifications
+CREATE TABLE notifications (
+    notification_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    reference_id BIGINT,
+    message TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    type VARCHAR(50),
+    reference_type VARCHAR(50),
+    title VARCHAR(200),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_is_read (is_read),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 26. notification_settings
+CREATE TABLE notification_settings (
+    setting_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    email_notification BOOLEAN DEFAULT TRUE,
+    push_notification BOOLEAN DEFAULT TRUE,
+    post_comment_notif BOOLEAN DEFAULT TRUE,
+    meeting_notif BOOLEAN DEFAULT TRUE,
+    chat_notif BOOLEAN DEFAULT TRUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 27. push_tokens
+CREATE TABLE push_tokens (
+    token_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_used_at TIMESTAMP NULL,
+    device_token VARCHAR(255),
+    device_type VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_is_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 28. admins
+CREATE TABLE admins (
+    admin_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    role VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_admin_user (user_id),
+    INDEX idx_role (role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 29. user_suspensions
+CREATE TABLE user_suspensions (
+    suspension_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    suspended_by BIGINT,
+    reason TEXT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    is_permanent BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_start_date (start_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 30. reports
+CREATE TABLE reports (
+    report_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    reporter_id BIGINT NOT NULL,
+    reported_id BIGINT,
+    reported_user_id BIGINT,
+    description TEXT,
+    admin_note TEXT,
+    resolved_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP NULL,
+    reported_type VARCHAR(50),
+    reason VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'PENDING',
+    FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_reporter_id (reporter_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 31. blocked_users
+CREATE TABLE blocked_users (
+    block_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    blocked_user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reason VARCHAR(200),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY uk_user_blocked (user_id, blocked_user_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_blocked_user_id (blocked_user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- 검증
+SELECT '✅ 31개 테이블 생성 완료!' AS status;
+SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = 'everyjapan';

@@ -1,0 +1,2 @@
+INDEX VERSION 1.4+C:\Users\kyeol\Documents\project_workspace\EveryJapan\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1965174767.index
