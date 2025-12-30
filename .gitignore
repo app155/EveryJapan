@@ -1,28 +1,21 @@
-# Eclipse
-.classpath
-.project
-.settings/
-.metadata/
-bin/
-tmp/
-
-# Tomcat/Maven build
-target/
-*.war
-*.jar
-work/
-
-# Docker
-.dockerignore
-!docker-compose.yml
-!Dockerfile
-
-# Logs/OS
-*.log
+# OS
 .DS_Store
 Thumbs.db
 
-# DB (스키마만 커밋, 덤프 제외)
-*.sql.dump
-*.backup.sql
-db/data/
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Environment variables (but keep .env.development and .env.production)
+.env.local
+.env.*.local
+
+# Docker volumes
+docker-volumes/
+
+# Logs
+*.log
+logs/
