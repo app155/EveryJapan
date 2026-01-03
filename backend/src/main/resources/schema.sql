@@ -15,6 +15,14 @@ create table universities(
     website varchar(255) not null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+select * from universities;
+
+insert into universities(name, name_en, location, type, email_domain, website)
+ values ("A대학", "AUniversity", "서울", "국립", "auniv.ac.kr", "auniv.ac.kr");
+
+ insert into universities(name, name_en, location, type, email_domain, website)
+ values ("B대학", "BUniversity", "서울", "사립", "buniv.ac.kr", "buniversity.ac.kr");
+
 CREATE TABLE users (
     user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     university BIGINT NOT NULL,

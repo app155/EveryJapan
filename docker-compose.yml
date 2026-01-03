@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
     # DB가 완전히 준비될 때까지 기다리는 헬스체크 (선택 사항이지만 권장)
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u$$MARIADB_USER", "-p$$MARIADB_PASSWORD"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-proot1234"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,8 +46,8 @@ services:
       - TZ=Asia/Tokyo
       # Spring Boot 애플리케이션이 DB에 연결하기 위한 설정 추가
       - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/globalin_db
-      - SPRING_DATASOURCE_USERNAME=globalin_user
-      - SPRING_DATASOURCE_PASSWORD=userpassword
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=1234
     networks:
       - globalin-network
     restart: unless-stopped
