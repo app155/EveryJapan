@@ -43,6 +43,45 @@ public class UserDAO {
 		
 	}
 	
+	public int loginProcess(String email, String password) {
+		int result = -1;
+		String sql = "select * from users where email = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				String dbPass = rs.getString("password");
+				
+				if (password.equals(dbPass)) {
+					result = 1;
+				}
+				else {
+					result = 0;
+				}
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	public void findByEmail() {
 		
 	}
@@ -73,6 +112,71 @@ public class UserDAO {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public Long getUserIdByEmail(String email) {
+		Long userId = null;
 		
+		String sql = "select user_id from users where email = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				userId = rs.getLong("user_id");
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return userId;
+	}
+	
+	public String getUsernameByEmail(String email) {
+		String username = null;
+		
+		String sql = "select username from users where email = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				username = rs.getString("username");
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return username;
 	}
 }

@@ -1,5 +1,7 @@
 package com.globalin.user;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,14 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 	
     @PostMapping("loginProc")
-    public String loginProc(String id, String passwd, @RequestParam("btn") String btnValue ) {
+    public String loginProc(String email, String passwd, @RequestParam("btn") String btnValue, HttpSession session ) {
         if (btnValue.equals("login")) {
-        		// TODO: id, passwd 체크 로직 (나중에)
-        		if (id.equals("test") && passwd.equals("1234")) {
+        		int result = UserDAO.getInstance().loginProcess(email, passwd);
+        	
+        		if (result == 1) {
+        			session.setAttribute("email", email);
+        			session.setAttribute("loginId", UserDAO.getInstance().getUserIdByEmail(email));
+        			session.setAttribute("username", UserDAO.getInstance().getUsernameByEmail(email));
+        			
     				return "redirect:main";
     			}
     		
     			else {
+    				if (result == 0) {
+    					// 비번틀림 띄우기
+    				}
+    					
+    				else {
+    					// 아이디없음 띄우기
+    				}
     				return "redirect:testLogin";
     			}
         }
@@ -29,7 +43,7 @@ public class TestController {
         }
     }
     
-    @GetMapping("/testLogin")
+    @GetMapping("testLogin")
     public String login() {
    	 	return "test/testLogin";
     }

@@ -8,7 +8,7 @@
 </head>
 <body>
 	<form action="loginProc" method="post">
-		아아디: <input type="text" name="id">
+		이메일: <input type="email" name="email">
 		비밀번호: <input type="password" name="passwd">
 		<input type="submit" name="btn" value="login">&nbsp;&nbsp;
 		<input type="submit" name="btn" value="register">&nbsp;&nbsp;
