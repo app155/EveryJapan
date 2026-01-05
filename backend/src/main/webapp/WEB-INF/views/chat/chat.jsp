@@ -34,7 +34,7 @@ loginId = <%=loginId %>
 		%>
 			<tr>
 				<td>
-					<b><%=rooms.get(i).getRoomName() %></b><br>
+					<a href="/chat/chatroom?roomId=<%=rooms.get(i).getRoomId() %>"><b><%=rooms.get(i).getRoomName() %></b><br></a>
 					<!-- 채팅방 마지막메시지넣기ㅣㅣㅣㅣ -->
 				</td>
 			<tr>

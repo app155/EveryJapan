@@ -44,8 +44,14 @@ public class TestController {
     }
     
     @GetMapping("testLogin")
-    public String login() {
-   	 	return "test/testLogin";
+    public String loginPage(HttpSession session) {
+    		if (session.getAttribute("loginId") == null) {
+    			return "test/testLogin";    			
+    		}
+    		
+    		else {
+    			return "redirect:main";
+    		}
     }
     
     @GetMapping("main")

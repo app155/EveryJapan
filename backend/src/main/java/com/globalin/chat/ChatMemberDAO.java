@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.dbcp.DBCPUtil;
+import com.globalin.user.UserDAO;
 
 public class ChatMemberDAO {
 	private static ChatMemberDAO instance;
@@ -28,6 +29,29 @@ public class ChatMemberDAO {
 			pstmt.setLong(1, roomId);
 			pstmt.setLong(2, userId);
 			pstmt.setString(3, nickname);
+			
+			pstmt.executeUpdate();
+			
+			result = true;
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public boolean insertMemberToRoomByEmail(long roomId, String email) {
+		boolean result = false;
+		
+		String sql = "insert into chat_members(room_id, user_id, nickname) values (?, ?, ?)";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setLong(1, roomId);
+			pstmt.setLong(2, UserDAO.getInstance().getUserIdByEmail(email));
+			pstmt.setString(3, UserDAO.getInstance().getUsernameByEmail(email));
 			
 			pstmt.executeUpdate();
 			
