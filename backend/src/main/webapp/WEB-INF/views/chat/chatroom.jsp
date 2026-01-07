@@ -1,16 +1,5 @@
-<%@page import="com.globalin.chat.MessageVO"%>
-<%@page import="java.util.List"%>
-<%@page import="com.globalin.chat.MessageDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-Long roomId = (Long)session.getAttribute("roomId");
-Long loginId = (Long)session.getAttribute("loginId");
-String username = (String)session.getAttribute("username");
-
-List<MessageVO> msgs = MessageDAO.getInstance().getMessagesInRoom(roomId);
-%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,11 +14,11 @@ List<MessageVO> msgs = MessageDAO.getInstance().getMessagesInRoom(roomId);
 </style>
 </head>
 <body>
-roomId <%=roomId %> 채팅방입니다.
+roomId ${roomId } 채팅방입니다.
 
 <script>
 window.onload = function() {
-    connectToRoom(<%=roomId %>);
+    connectToRoom(${roomId });
 };
 </script>
 <h2>🗣️ 실시간 채팅(ws://localhost:8080/chat)</h2> <!-- 앞의 ws://가 꼭 붙어야 함 -->
@@ -45,7 +34,7 @@ window.onload = function() {
     			<h3>인원 추가</h3>
         		<p>
         			인원 추가하기<br>
-        			<input type="hidden" name="roomId" value="<%=roomId %>">
+        			<input type="hidden" name="roomId" value="${roomId }">
 	        		<input type="email" id="emailInput" placeholder="추가할 인원 이메일 입력" name="email"><br>
         		</p>
         		<input type="submit" value="인원 추가">
@@ -95,7 +84,7 @@ window.onload = function() {
 			ws.close();
 		}
 		
-		ws = new WebSocket("ws://localhost:8080/chat?room=" + roomId);
+		ws = new WebSocket("ws://localhost:8080/chat?roomId=" + roomId);
 		
 		// 각 이벤트 핸들러에 메소드 등록
 		ws.onopen = function() {

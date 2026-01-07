@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ChatRoomDAO {
 				
 				room.setRoomId(rs.getLong("room_id"));
 				room.setAnonymous(rs.getBoolean("is_anonymous"));
+				room.setLastMessageId(rs.getLong("last_message_id"));
 				room.setLastMessageAt(rs.getTimestamp("last_message_at"));
 				room.setCreateAt(rs.getTimestamp("create_at"));
 				room.setRoomName(rs.getString("room_name"));
@@ -60,6 +62,30 @@ public class ChatRoomDAO {
 		}
 		
 		return rooms;
+	}
+	
+	public boolean updateLastMsgId(long roomId, long msgId) {
+		boolean result = false;
+		
+		String sql = "update chat_rooms set last_message_id = ?, last_message_at = ? where room_id = ?";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
+			
+			pstmt.setLong(1, msgId);
+			pstmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+			pstmt.setLong(3, roomId);
+			
+			pstmt.executeUpdate();
+			
+			result = true;
+			
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	public boolean insert(boolean isAnonymous, String roomname, RoomType roomType, long userId, String nickname) {

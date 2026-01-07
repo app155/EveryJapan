@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public class ChatRoomVO {
 	private long roomId;
 	private boolean isAnonymous;
+	private long lastMessageId;
 	private Timestamp lastMessageAt;
 	private Timestamp createAt;
 	private String roomName;
@@ -21,6 +22,12 @@ public class ChatRoomVO {
 	}
 	public void setAnonymous(boolean isAnonymous) {
 		this.isAnonymous = isAnonymous;
+	}
+	public long getLastMessageId() {
+		return lastMessageId;
+	}
+	public void setLastMessageId(long lastMessageId) {
+		this.lastMessageId = lastMessageId;
 	}
 	public Timestamp getLastMessageAt() {
 		return lastMessageAt;

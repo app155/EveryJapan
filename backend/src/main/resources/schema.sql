@@ -19,7 +19,7 @@ select * from users;
 select * from universities;
 select * from chat_rooms;
 select * from chat_members;
-
+select * from messages;
 
 insert into universities(name, name_en, location, type, email_domain, website)
  values ("A대학", "AUniversity", "서울", "국립", "auniv.ac.kr", "auniv.ac.kr");
@@ -144,10 +144,12 @@ CREATE TABLE comments (
 CREATE TABLE chat_rooms (
     room_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     is_anonymous BOOLEAN DEFAULT FALSE,
+    last_message_id BIGINT NULL,
     last_message_at TIMESTAMP NULL,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     room_name VARCHAR(100) NOT NULL,
-    room_type VARCHAR(20) NOT NULL
+    room_type VARCHAR(20) NOT NULL,
+    FOREIGN KEY (last_message_id) REFERENCES messages(message_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE chat_members (

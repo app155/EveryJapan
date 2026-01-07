@@ -1,15 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-<%@page import="com.globalin.chat.ChatRoomVO"%>
-<%@page import="com.globalin.chat.ChatRoomDAO"%>
-<%@page import="java.util.List"%>  
-<%
-Long loginId = (Long)session.getAttribute("loginId");
-String username = (String)session.getAttribute("username");
-List<ChatRoomVO> rooms = ChatRoomDAO.getInstance().getAllRoomsById(loginId);
-%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,29 +12,26 @@ List<ChatRoomVO> rooms = ChatRoomDAO.getInstance().getAllRoomsById(loginId);
 </style>
 </head>
 <body>
-loginId = <%=loginId %>
-<%=username %>님 안녕하세요. 채팅페이지입니다.
+loginId = ${loginId }
+${username }님 안녕하세요. 채팅페이지입니다.<br><br>
 
 <div>
-	<table>
+	<table border="1">
 		<tr>
-			<td>소속된 채팅방 목록: </td>
+			<td colspan="2">소속된 채팅방 목록: </td>
 		</tr>
-		<%
-		for (int i = 0; i < rooms.size(); i++) {
-		%>
-			<tr>
-				<td>
-					<a href="/chat/chatroom?roomId=<%=rooms.get(i).getRoomId() %>"><b><%=rooms.get(i).getRoomName() %></b><br></a>
-					<!-- 채팅방 마지막메시지넣기ㅣㅣㅣㅣ -->
-				</td>
-			<tr>
-		<%
-		}
-		%>
+			<c:forEach var="room" items="${rooms }" >
+				<tr>
+					<td>
+						<a href="/chat/chatroom?roomId=${room.getRoomId() }"><b>${room.getRoomName() }</b><br></a>
+						${msgDao.getContentById(room.getLastMessageId()) }
+					</td>
+					<td>${room.getLastMessageAt() }</td>
+				<tr>
+			</c:forEach>
 	</table>
 </div>
-
+<br><br>
 <button onclick="openModal()">채팅방 생성</button>
 
 <div id="myModal" class="modal">

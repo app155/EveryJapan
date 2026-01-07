@@ -22,25 +22,31 @@ public class MultiChatEndPoint {
 		// http세션에서 정보를 가져오고
 		Long loginId = (Long)config.getUserProperties().get("loginId");
 		String username = (String)config.getUserProperties().get("username");
-		String roomId = getRoomId(session);
+		Long roomId = (Long)config.getUserProperties().get("roomId");
+		String roomSessionId = getRoomId(session);
 		
 		// 여기서 엔드포인트 세션에 저장함................
 		config.getUserProperties().put("username", username);
 		config.getUserProperties().put("loginId", loginId);
+		config.getUserProperties().put("roomId", roomId);
 		
 		
-		rooms.computeIfAbsent(roomId, k -> ConcurrentHashMap.newKeySet()).add(session);
+		rooms.computeIfAbsent(roomSessionId, k -> ConcurrentHashMap.newKeySet()).add(session);
 		System.out.println("👤 [" + roomId + "] 연결: " + session.getId());
 	}
 	
 	@OnMessage
 	public void onMessage(Session session, String message) {
-		String roomId = getRoomId(session);
+		String roomSessionId = getRoomId(session);
+		Long roomId = (Long)session.getUserProperties().get("roomId");
+		Long loginId = (Long)session.getUserProperties().get("loginId");
 		String username = (String)session.getUserProperties().get("username");
 		String broadcastMsg = username + ": " + message;
         
+		MessageDAO.getInstance().insert(roomId, loginId, message);
+		
 		// 해당 방 클라이언트들에게만 전송
-		rooms.getOrDefault(roomId, Collections.emptySet()).stream()
+		rooms.getOrDefault(roomSessionId, Collections.emptySet()).stream()
 			.filter(Session::isOpen)
 			.forEach(client -> {
 				try {

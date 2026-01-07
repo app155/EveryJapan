@@ -21,6 +21,39 @@ public class MessageDAO {
 		return instance;
 	}
 	
+	public String getContentById(long msgId) {
+		String content = "";
+		
+		String sql = "select content from messages where message_id = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setLong(1, msgId);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				content = rs.getString("content");
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return content;
+	}
+	
 	public List<MessageVO> getMessagesInRoom(long roomId) {
 		List<MessageVO> msgs = new ArrayList<>();
 		
@@ -67,6 +100,38 @@ public class MessageDAO {
 		return msgs;
 	}
 	
+	public boolean insert(long roomId, long senderId, String content) {
+		boolean result = false;
+		
+		String sql = "insert into messages(room_id, sender_id, content, is_anonymous, message_type) values (?, ?, ?, ?, ?)";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
+			
+			pstmt.setLong(1, roomId);
+			pstmt.setLong(2, senderId);
+			pstmt.setString(3, content);
+			pstmt.setBoolean(4, false);
+			pstmt.setString(5, MessageType.PUBLIC.toString());
+			
+			pstmt.executeUpdate();
+			
+			result = true;
+			
+			try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					ChatRoomDAO.getInstance().updateLastMsgId(roomId, generatedKeys.getLong(1));
+				}
+			}
+			
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public boolean insert(long roomId, long senderId, String content, boolean isAnonymous, MessageType messageType) {
 		boolean result = false;
 		
@@ -87,7 +152,7 @@ public class MessageDAO {
 			
 			try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					
+					ChatRoomDAO.getInstance().updateLastMsgId(roomId, generatedKeys.getLong(1));
 				}
 			}
 			

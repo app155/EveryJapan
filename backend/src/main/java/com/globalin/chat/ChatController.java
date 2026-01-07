@@ -1,5 +1,6 @@
 package com.globalin.chat;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,12 @@ import com.globalin.user.UserDAO;
 public class ChatController {
 	
 	@GetMapping("chat")
-	public String chatMain() {
+	public String chatMain(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Long loginId = (Long)session.getAttribute("loginId");
+		request.setAttribute("rooms", ChatRoomDAO.getInstance().getAllRoomsById(loginId));
+		request.setAttribute("msgDao", MessageDAO.getInstance());
+		
 		return "chat/chat";
 	}
 	
@@ -35,9 +41,9 @@ public class ChatController {
 	}
 	
 	@GetMapping("chatroom")
-	public String goToChatRoom(@RequestParam long roomId, HttpSession session) {
-		
-		session.setAttribute("roomId", roomId);
+	public String goToChatRoom(@RequestParam long roomId, HttpServletRequest request) {
+		request.setAttribute("roomId", roomId);
+		request.setAttribute("msgs", MessageDAO.getInstance().getMessagesInRoom(roomId));
 		
 		return "chat/chatroom";
 	}
