@@ -1,4 +1,4 @@
-package com.globalin.chat;
+package com.globalin.chat.model;
 
 import java.sql.Timestamp;
 

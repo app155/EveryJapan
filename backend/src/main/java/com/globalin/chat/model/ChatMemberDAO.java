@@ -1,11 +1,11 @@
-package com.globalin.chat;
+package com.globalin.chat.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.dbcp.DBCPUtil;
-import com.globalin.user.UserDAO;
+import com.globalin.user.model.UserDAO;
 
 public class ChatMemberDAO {
 	private static ChatMemberDAO instance;

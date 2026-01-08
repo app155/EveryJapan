@@ -1,4 +1,4 @@
-package com.globalin.user;
+package com.globalin.user.model;
 
 import java.sql.Timestamp;
 

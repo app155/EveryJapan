@@ -1,9 +1,12 @@
-package com.globalin.user;
+package com.globalin.user.model;
 import java.sql.*;
+
+import org.springframework.stereotype.Repository;
+
 import com.dbcp.DBCPUtil;
-import com.globalin.university.UniversityDAO;
+import com.globalin.university.model.UniversityDAO;
 
-
+@Repository
 public class UserDAO {
 	private static UserDAO instance;
 	

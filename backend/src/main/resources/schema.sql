@@ -15,12 +15,6 @@ create table universities(
     website varchar(255) not null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-select * from users;
-select * from universities;
-select * from chat_rooms;
-select * from chat_members;
-select * from messages;
-
 insert into universities(name, name_en, location, type, email_domain, website)
  values ("A대학", "AUniversity", "서울", "국립", "auniv.ac.kr", "auniv.ac.kr");
 
@@ -378,3 +372,10 @@ CREATE TABLE blocked_users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+select * from users;
+select * from universities;
+select * from chat_rooms;
+select * from chat_members;
+select * from messages;

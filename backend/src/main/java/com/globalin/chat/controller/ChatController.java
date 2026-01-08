@@ -1,4 +1,4 @@
-package com.globalin.chat;
+package com.globalin.chat.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.globalin.user.UserDAO;
+import com.globalin.chat.model.*;
+import com.globalin.user.model.*;
 
 @Controller
 @RequestMapping("/chat")

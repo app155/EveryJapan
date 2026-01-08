@@ -1,4 +1,4 @@
-package com.globalin.university;
+package com.globalin.university.model;
 
 import java.sql.*;
 

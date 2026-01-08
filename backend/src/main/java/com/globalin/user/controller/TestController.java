@@ -1,27 +1,30 @@
-package com.globalin.user;
+package com.globalin.user.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.globalin.user.model.*;
+import com.globalin.user.service.UserService_;
 
 @Controller
 @RequestMapping("/test")
 public class TestController {
-	
+	@Autowired UserService_ userService;
     @PostMapping("loginProc")
     public String loginProc(String email, String passwd, @RequestParam("btn") String btnValue, HttpSession session ) {
         if (btnValue.equals("login")) {
-        		int result = UserDAO.getInstance().loginProcess(email, passwd);
+        		int result = userService.loginProcess(email, passwd);
         	
         		if (result == 1) {
         			session.setAttribute("email", email);
-        			session.setAttribute("loginId", UserDAO.getInstance().getUserIdByEmail(email));
-        			session.setAttribute("username", UserDAO.getInstance().getUsernameByEmail(email));
+        			session.setAttribute("loginId", userService.getUserIdByEmail(email));
+        			session.setAttribute("username", userService.getUsernameByEmail(email));
         			
     				return "redirect:main";
     			}
@@ -66,7 +69,7 @@ public class TestController {
     
     @PostMapping("registerProc")
     public String registerProc(String email, String password, String username, String university, String grade, String major, String studentId) {
-    		if (UserDAO.getInstance().insert(email, password, username, university, Integer.parseInt(grade), major, studentId)) {
+    		if (userService.insert(email, password, username, university, grade, major, studentId)) {
     			return "redirect:main";
     		}
     		

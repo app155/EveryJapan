@@ -1,4 +1,4 @@
-package com.globalin.user;
+package com.globalin.user.controller;
 
 import java.io.IOException;
 
