@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Repository;
+
 import com.dbcp.DBCPUtil;
 import com.globalin.user.model.UserDAO;
 
+@Repository
 public class ChatMemberDAO {
 	private static ChatMemberDAO instance;
 	

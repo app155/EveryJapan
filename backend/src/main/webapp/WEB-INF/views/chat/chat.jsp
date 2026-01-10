@@ -20,13 +20,14 @@ ${username }님 안녕하세요. 채팅페이지입니다.<br><br>
 		<tr>
 			<td colspan="2">소속된 채팅방 목록: </td>
 		</tr>
-			<c:forEach var="room" items="${rooms }" >
+			<c:forEach var="room" items="${rooms }" varStatus="status" >
+				<c:set var="msg" value="${msgs[status.index] }" />
 				<tr>
 					<td>
-						<a href="/chat/chatroom?roomId=${room.getRoomId() }"><b>${room.getRoomName() }</b><br></a>
-						${msgDao.getContentById(room.getLastMessageId()) }
+						<a href="/chat/chatroom?roomId=${room.roomId }"><b>${room.roomName }</b><br></a>
+						${msg }
 					</td>
-					<td>${room.getLastMessageAt() }</td>
+					<td>${room.lastMessageAt }</td>
 				<tr>
 			</c:forEach>
 	</table>
@@ -44,9 +45,9 @@ ${username }님 안녕하세요. 채팅페이지입니다.<br><br>
 	        		익명채팅여부 <input type="checkbox" name="isAnonymous"><br>
 	        		방 종류
 	        		<select name="roomType">
-	        			<option>Direct</option>
-	        			<option>Group</option>
-	        			<option>Anonymous</option>
+	        			<option value="DIRECT">Direct</option>
+	        			<option value="GROUP">Group</option>
+	        			<option value="ANONYMOUS">Anonymous</option>
 	        		</select>
         		</p>
         

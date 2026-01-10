@@ -14,5 +14,6 @@ loginId= ${loginId }<br>
 ${username }님 환영합니다.<br>
 
 <button onclick="location.href='/chat/chat'">채팅페이지로</button>
+<button onclick="location.href='/test/logoutProc'">로그아웃</button>
 </body>
 </html>

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import com.globalin.user.model.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.globalin.user.service.UserService_;
 
 @Controller
@@ -17,7 +17,7 @@ import com.globalin.user.service.UserService_;
 public class TestController {
 	@Autowired UserService_ userService;
     @PostMapping("loginProc")
-    public String loginProc(String email, String passwd, @RequestParam("btn") String btnValue, HttpSession session ) {
+    public String loginProc(String email, String passwd, @RequestParam("btn") String btnValue, HttpSession session, RedirectAttributes ra) {
         if (btnValue.equals("login")) {
         		int result = userService.loginProcess(email, passwd);
         	
@@ -30,13 +30,8 @@ public class TestController {
     			}
     		
     			else {
-    				if (result == 0) {
-    					// 비번틀림 띄우기
-    				}
-    					
-    				else {
-    					// 아이디없음 띄우기
-    				}
+    				ra.addFlashAttribute("email", email);
+    				ra.addFlashAttribute("error", result == 0 ? "잘못된 비밀번호입니다." : "등록된 이메일이 없습니다.");
     				return "redirect:testLogin";
     			}
         }
@@ -44,6 +39,13 @@ public class TestController {
         else {
         		return "redirect:register";
         }
+    }
+    
+    @GetMapping("logoutProc")
+    public String logout(HttpSession session) {
+    		session.invalidate();
+    		
+    		return "test/logoutProc";
     }
     
     @GetMapping("testLogin")
@@ -70,7 +72,7 @@ public class TestController {
     @PostMapping("registerProc")
     public String registerProc(String email, String password, String username, String university, String grade, String major, String studentId) {
     		if (userService.insert(email, password, username, university, grade, major, studentId)) {
-    			return "redirect:main";
+    			return "redirect:testLogin";
     		}
     		
     		return "asdf";

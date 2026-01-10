@@ -14,7 +14,7 @@ import com.globalin.util.HttpSessionConfigurator;
 @ServerEndpoint(value = "/chat", configurator = HttpSessionConfigurator.class)
 public class MultiChatEndPoint {
 	// 방ID => 클라이언트 리스트 맵
-	private static final Map<String, Set<Session>> rooms = new ConcurrentHashMap<>(); 
+	private static final Map<Long, Set<Session>> rooms = new ConcurrentHashMap<>(); 
 	
 	@OnOpen
 	public void onOpen(Session session, EndpointConfig config) {
@@ -23,7 +23,7 @@ public class MultiChatEndPoint {
 		Long loginId = (Long)config.getUserProperties().get("loginId");
 		String username = (String)config.getUserProperties().get("username");
 		Long roomId = (Long)config.getUserProperties().get("roomId");
-		String roomSessionId = getRoomId(session);
+		// String roomSessionId = getRoomId(session);
 		
 		// 여기서 엔드포인트 세션에 저장함................
 		config.getUserProperties().put("username", username);
@@ -31,7 +31,7 @@ public class MultiChatEndPoint {
 		config.getUserProperties().put("roomId", roomId);
 		
 		
-		rooms.computeIfAbsent(roomSessionId, k -> ConcurrentHashMap.newKeySet()).add(session);
+		rooms.computeIfAbsent(roomId, k -> ConcurrentHashMap.newKeySet()).add(session);
 		System.out.println("👤 [" + roomId + "] 연결: " + session.getId());
 	}
 	
@@ -46,7 +46,7 @@ public class MultiChatEndPoint {
 		MessageDAO.getInstance().insert(roomId, loginId, message);
 		
 		// 해당 방 클라이언트들에게만 전송
-		rooms.getOrDefault(roomSessionId, Collections.emptySet()).stream()
+		rooms.getOrDefault(roomId, Collections.emptySet()).stream()
 			.filter(Session::isOpen)
 			.forEach(client -> {
 				try {

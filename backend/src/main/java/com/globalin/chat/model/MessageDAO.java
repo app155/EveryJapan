@@ -8,8 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.dbcp.DBCPUtil;
 
+@Repository
 public class MessageDAO {
 	private static MessageDAO instance;
 	
@@ -31,6 +34,39 @@ public class MessageDAO {
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			
 			pstmt.setLong(1, msgId);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				content = rs.getString("content");
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return content;
+	}
+	
+	public String getLastContentInRoom(long roomId) {
+		String content = "";
+		
+		String sql = "select content from messages where room_id = ? order by sent_at desc limit 1";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setLong(1, roomId);
 			rs = pstmt.executeQuery();
 			
 			if (rs.next()) {

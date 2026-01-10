@@ -7,10 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
 
 import com.dbcp.DBCPUtil;
 
+@Repository
 public class ChatRoomDAO {
 	private static ChatRoomDAO instance;
 	
@@ -38,7 +43,6 @@ public class ChatRoomDAO {
 				
 				room.setRoomId(rs.getLong("room_id"));
 				room.setAnonymous(rs.getBoolean("is_anonymous"));
-				room.setLastMessageId(rs.getLong("last_message_id"));
 				room.setLastMessageAt(rs.getTimestamp("last_message_at"));
 				room.setCreateAt(rs.getTimestamp("create_at"));
 				room.setRoomName(rs.getString("room_name"));

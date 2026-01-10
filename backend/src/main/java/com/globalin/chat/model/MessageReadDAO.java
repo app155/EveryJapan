@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Repository;
+
 import com.dbcp.DBCPUtil;
 
+@Repository
 public class MessageReadDAO {
 	private static MessageReadDAO instance;
 	
