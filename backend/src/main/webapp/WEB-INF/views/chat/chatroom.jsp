@@ -5,13 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-    .modal-content { background: white; margin: 20% auto; width: 300px; padding: 20px; border-radius: 10px; text-align: center; }
-	#messages { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
-	#input { width: 70%; padding: 5px; }
-	button { padding: 5px 15px; }
-</style>
+<link href="/style/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 roomId ${roomId } 채팅방입니다.
@@ -58,7 +52,12 @@ window.onload = function() {
 	var messages = document.getElementById('messages');
 	
 	function addMessage(msg) {
-		messages.innerHTML += '<div>' + new Date().toLocaleTimeString() + '|' + msg + '</div>';
+		messages.innerHTML += 
+			'<div class="message.me">' + 
+				'<div class="speech-bubble speech-bubble-right">' + 
+					'<p align="right">' + new Date().toLocaleTimeString() + '|' + msg + '</p>' + 
+				'</div>' + 
+			'</div>';
 		messages.scrollTop = messages.scrollHeight;
 	}
 	

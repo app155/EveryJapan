@@ -68,17 +68,16 @@ public class ChatRoomDAO {
 		return rooms;
 	}
 	
-	public boolean updateLastMsgId(long roomId, long msgId) {
+	public boolean updateLastMsgId(long roomId) {
 		boolean result = false;
 		
-		String sql = "update chat_rooms set last_message_id = ?, last_message_at = ? where room_id = ?";
+		String sql = "update chat_rooms set last_message_at = ? where room_id = ?";
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql)) {
 			
-			pstmt.setLong(1, msgId);
-			pstmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
-			pstmt.setLong(3, roomId);
+			pstmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+			pstmt.setLong(2, roomId);
 			
 			pstmt.executeUpdate();
 			

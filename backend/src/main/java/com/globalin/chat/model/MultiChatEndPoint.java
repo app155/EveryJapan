@@ -9,12 +9,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
-import com.globalin.util.HttpSessionConfigurator;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.globalin.chat.service.ChatService;
+import com.globalin.config.HttpSessionConfigurator;
 
 @ServerEndpoint(value = "/chat", configurator = HttpSessionConfigurator.class)
 public class MultiChatEndPoint {
 	// 방ID => 클라이언트 리스트 맵
-	private static final Map<Long, Set<Session>> rooms = new ConcurrentHashMap<>(); 
+	private static final Map<Long, Set<Session>> rooms = new ConcurrentHashMap<>();
+	
+    public static ChatService chatService;
 	
 	@OnOpen
 	public void onOpen(Session session, EndpointConfig config) {
@@ -30,20 +35,25 @@ public class MultiChatEndPoint {
 		config.getUserProperties().put("loginId", loginId);
 		config.getUserProperties().put("roomId", roomId);
 		
-		
 		rooms.computeIfAbsent(roomId, k -> ConcurrentHashMap.newKeySet()).add(session);
 		System.out.println("👤 [" + roomId + "] 연결: " + session.getId());
 	}
 	
 	@OnMessage
 	public void onMessage(Session session, String message) {
-		String roomSessionId = getRoomId(session);
+	    if (MultiChatEndPoint.chatService == null) {
+	        System.out.println("❌ chatService NULL!");
+	        return;
+	    }
+	    System.out.println("✅ chatService OK: " + MultiChatEndPoint.chatService);
+		
+		// String roomSessionId = getRoomId(session);
 		Long roomId = (Long)session.getUserProperties().get("roomId");
 		Long loginId = (Long)session.getUserProperties().get("loginId");
 		String username = (String)session.getUserProperties().get("username");
 		String broadcastMsg = username + ": " + message;
         
-		MessageDAO.getInstance().insert(roomId, loginId, message);
+		MultiChatEndPoint.chatService.saveMsg(roomId, loginId, message);
 		
 		// 해당 방 클라이언트들에게만 전송
 		rooms.getOrDefault(roomId, Collections.emptySet()).stream()
@@ -56,13 +66,5 @@ public class MultiChatEndPoint {
 					e.printStackTrace();
 				}
 			});
-	}
-	
-	private String getRoomId(Session session) {
-		// ws://localhost:8080/chat?room=general
-		return session.getQueryString() != null && 
-				session.getQueryString().contains("room=") ?
-				session.getQueryString().split("room=")[1].split("&")[0] :
-				"general";  // 기본 방
 	}
 }

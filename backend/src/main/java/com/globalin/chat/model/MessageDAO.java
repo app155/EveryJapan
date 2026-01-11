@@ -156,7 +156,7 @@ public class MessageDAO {
 			
 			try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					ChatRoomDAO.getInstance().updateLastMsgId(roomId, generatedKeys.getLong(1));
+					ChatRoomDAO.getInstance().updateLastMsgId(roomId);
 				}
 			}
 			
@@ -188,7 +188,7 @@ public class MessageDAO {
 			
 			try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					ChatRoomDAO.getInstance().updateLastMsgId(roomId, generatedKeys.getLong(1));
+					ChatRoomDAO.getInstance().updateLastMsgId(roomId);
 				}
 			}
 			

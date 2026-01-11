@@ -1,4 +1,4 @@
-package com.globalin.util;
+package com.globalin.config;
 
 import java.util.List;
 import java.util.Map;

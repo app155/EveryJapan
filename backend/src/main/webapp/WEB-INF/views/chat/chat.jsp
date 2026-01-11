@@ -12,6 +12,7 @@
 </style>
 </head>
 <body>
+<%@ include file="../sub/top.jsp" %>
 loginId = ${loginId }
 ${username }님 안녕하세요. 채팅페이지입니다.<br><br>
 

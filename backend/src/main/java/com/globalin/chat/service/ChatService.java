@@ -48,4 +48,8 @@ public class ChatService {
 		return memDAO.insertMemberToRoomByEmail(roomId, email);
 	}
 
+	public boolean saveMsg(long roomId, long userId, String message) {
+		return msgDAO.insert(roomId, userId, message);
+	}
+
 }
