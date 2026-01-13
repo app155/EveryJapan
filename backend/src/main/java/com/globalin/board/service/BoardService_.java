@@ -19,4 +19,8 @@ public class BoardService_ {
 	public boolean createPost(String content, long loginId, String title, String category) {
 		return postDAO.insert(content, loginId, title, category);
 	}
+	
+	public PostVO getPost(long postId) {
+		return postDAO.getPost(postId);
+	}
 }
