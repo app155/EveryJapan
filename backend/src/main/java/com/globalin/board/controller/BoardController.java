@@ -1,5 +1,7 @@
 package com.globalin.board.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,9 @@ public class BoardController {
 	@Autowired BoardService_ boardService;
 	
 	@GetMapping("main")
-	public String boardMain(HttpServletRequest request) {
+	public String boardMain(HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
+		
 		List<PostVO> posts = boardService.getAllPosts();
 		//Integer pageNum = Integer.parseInt(request.getParameter("pageNum"));
 		
@@ -34,23 +38,24 @@ public class BoardController {
 	}
 	
 	@PostMapping("/createPostProc")
-	public String createPostProc(String content, long authorId, String title, String category) {
+	public String createPostProc(String content, long authorId, String title, String category, HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
 		boardService.createPost(content, authorId, title, category);
-		return "redirect:board/main";
+		return "redirect:main";
 	}
 	
 	@GetMapping("/post")
-	public String getPost(long postId, HttpServletRequest request) {
+	public String getPost(long postId, HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
+		
 		PostVO post = boardService.getPost(postId);
 		
-		String title = post.getTitle();
-		String content = post.getContent();
-		String category = post.getCategory();
+		System.out.println(post.toString());
+		System.out.println(postId + "!@$@#%Q#$#^@$#^@#^#%$@^@$^$^@#%#DSFDASDSFAFSFASDFASDFASDFASF");
 		
-		request.setAttribute("title", title);
-		request.setAttribute("content", content);
-		request.setAttribute("category", category);
+		request.setAttribute("post", post);
+		System.out.println(post.toString());
 		
-		return "redirect:board/postId=" + postId;
+		return "/board/post";
 	}
 }

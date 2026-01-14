@@ -32,6 +32,7 @@ public class PostDAO {
 			e.printStackTrace();
 		}
 		
+		System.out.println("게시글저장성공!@#~!###!@~!#@#~!#~@#");
 		return result;
 	}
 	
@@ -55,6 +56,36 @@ public class PostDAO {
 		}
 		
 		return result;
+	}
+	
+	public int getPostsCount() {
+		String sql = "select count(*) from posts";
+		int count = 0;
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				count = rs.getInt(1); 
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return count;
 	}
 	
 	public List<PostVO> getAllPosts() {
@@ -102,12 +133,13 @@ public class PostDAO {
 	}
 	
 	public PostVO getPost(long postId) {
-		String sql = "select * from posts";
+		String sql = "select * from posts where post_id = ?";
 		PostVO post = null;
 		ResultSet rs = null;
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, postId);
 			rs = pstmt.executeQuery();
 			
 			if (rs.next()) {

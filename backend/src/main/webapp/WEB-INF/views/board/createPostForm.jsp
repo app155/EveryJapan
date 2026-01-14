@@ -12,8 +12,8 @@
 게시글작성 만들기...
 
 <div align="center">
-	<form action="createPostProc" method="get">
-		<input type="hidden" name="author" value="${loginId }">
+	<form action="createPostProc" method="post">
+		<input type="hidden" name="authorId" value="${loginId }">
 		<table width="60%">
 			<tr>
 				<td>
@@ -25,7 +25,7 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<textarea rows="20" cols="20" placeholder="본문을 입력해 주세요."></textarea>
+					<textarea rows="20" cols="20" name="content" placeholder="본문을 입력해 주세요."></textarea>
 				</td>
 			</tr>
 			<tr>

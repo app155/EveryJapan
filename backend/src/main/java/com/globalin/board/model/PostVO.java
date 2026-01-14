@@ -21,6 +21,11 @@ public class PostVO {
 	public void setPostId(long postId) {
 		this.postId = postId;
 	}
+	@Override
+	public String toString() {
+		return "postId: " + this.postId + "," + this.title;
+	}
+	
 	public String getContent() {
 		return content;
 	}

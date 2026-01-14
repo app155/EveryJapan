@@ -18,18 +18,22 @@
 			<th>작성자</th>
 			<th>작성일</th>
 		</tr>
-		<c:if test="${post == null }">
+		<c:if test="${posts == null }">
 			<tr><td colspan="4" align="center">등록 게시글이 없습니다.</td></tr>
 		</c:if>
 		<c:forEach var="post" items="${posts }">
 			<tr>
-				<td>${post.postId }</td>
-				<td>${post.title }</td>
-				<td>${post.author }</td>
-				<td>${post.createdAt }</td>
+				<td width="10%">${post.postId }</td>
+				<td width="50%"><a href="/board/post?postId=${post.postId }">${post.title }</a></td>
+				<td width="20%">${post.author }</td>
+				<td width="20%">${post.createdAt }</td>
 			</tr>
 		</c:forEach>
 	</table>
+	<br>
+	<div>
+		
+	</div>
 </div>
 
 <input type="button" value="글작성" onclick="location.href='/board/createPostForm'">
