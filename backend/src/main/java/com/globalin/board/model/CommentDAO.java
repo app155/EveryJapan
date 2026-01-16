@@ -17,12 +17,13 @@ public class CommentDAO {
 	@Autowired PostDAO postDAO;
 	
 	public List<CommentVO> getAllCommentsInPost(long postId) {
-		String sql = "";
+		String sql = "select * from comments where post_id = ?";
 		List<CommentVO> comments = new ArrayList<>();
 		ResultSet rs = null;
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, postId);
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
@@ -66,6 +67,23 @@ public class CommentDAO {
 			pstmt.setLong(2, userId);
 			pstmt.setString(3, content);
 			pstmt.setBoolean(4, isAnonymous);
+			
+			pstmt.executeUpdate();
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public boolean delete(long commentId) {
+		boolean result = false;
+		String sql = "delete from comments where comment_id = ?";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, commentId);
 			
 			pstmt.executeUpdate();
 		}

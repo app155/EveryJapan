@@ -10,7 +10,7 @@
 </head>
 <body>
 <div align="center">
-	<form action="createPostProc" method="post">
+	<form action="modifyPostProc" method="post">
 		<input type="hidden" name="authorId" value="${loginId }">
 		<table width="60%">
 			<tr>

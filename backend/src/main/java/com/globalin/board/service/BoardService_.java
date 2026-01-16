@@ -24,6 +24,7 @@ public class BoardService_ {
 	}
 	
 	public PostVO getPost(long postId) {
+		postDAO.increaseViewCount(postId);
 		return postDAO.getPost(postId);
 	}
 	
@@ -35,7 +36,7 @@ public class BoardService_ {
 		return commentDAO.insert(postId, userId, content, isAnonymous);
 	}
 	
-	public boolean increasePostViewCount(long postId) {
-		return postDAO.increaseViewCount(postId);
+	public boolean deleteComment(long commentId) {
+		return commentDAO.delete(commentId);
 	}
 }

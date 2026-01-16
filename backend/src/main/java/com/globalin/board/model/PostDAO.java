@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,6 +183,27 @@ public class PostDAO {
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setLong(1, postId);
+			
+			pstmt.executeQuery();
+		}
+		
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public boolean modifyPost(long postId, String content, String title) {
+		boolean result = false;
+		String sql = "update posts set title = ?, content = ?, update_at = ? where post_id = ?";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setString(1, title);
+			pstmt.setString(2, content);
+			pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			pstmt.setLong(4, postId);
 			
 			pstmt.executeQuery();
 		}

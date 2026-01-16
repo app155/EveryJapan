@@ -11,19 +11,19 @@
 <body>
 <div align="center">
 	<form action="createCommentProc" method="post">
-		<input type="hidden" name="postId" value="${postId }">
-		<input type="hidden" name="userId" value="${userId }">
+		<input type="hidden" name="postId" value="${post.postId }">
+		<input type="hidden" name="userId" value="${loginId }">
 		<table>
 			<tr>
 				<td><textarea rows="2" cols="80" name="content" placeholder="댓글 입력하기"></textarea></td>
-				<td><input type="button" value="댓글 작성">%nbsp;<input type="checkbox" name="isAnonymous">익명댓글</td>	
+				<td><input type="submit" value="댓글 작성">&nbsp;<input type="checkbox" name="isAnonymous">익명댓글</td>	
 			</tr>
 		</table>
 		<table>
 			<c:forEach var="comment" items="${comments }">
 				<tr>
 					<td>
-						${comment.userId }&nbsp;${comment.content }&nbsp;&nbsp;&nbsp;
+						${comment.userId }&nbsp;${comment.content }&nbsp;&nbsp;&nbsp;${comment.createdAt }
 						<input type="button" value="x" onclick="location.href='/board/commentDelProc'">
 					</td>
 				</tr>

@@ -50,7 +50,6 @@ public class BoardController {
 		request.setCharacterEncoding("UTF-8");
 		
 		PostVO post = boardService.getPost(postId);
-		boardService.increasePostViewCount(postId);
 		List<CommentVO> comments = boardService.getAllCommentsInPost(postId);
 		
 		request.setAttribute("post", post);
@@ -59,12 +58,31 @@ public class BoardController {
 		return "/board/post";
 	}
 	
+	@PostMapping("/modifyPostForm")
+	public String modifyPostForm(long postId, String title, String content, long authorId, HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
+		
+		request.setAttribute("title", title);
+		request.setAttribute("postId", postId);
+		request.setAttribute("content", content);
+		request.setAttribute("authorId", authorId);
+		
+		return "redirect:modifyPostForm";
+	}
+	
 	@PostMapping("/createCommentProc")
 	public String createComment(long postId, long userId, String content, boolean isAnonymous, HttpServletRequest request) throws UnsupportedEncodingException {
 		request.setCharacterEncoding("UTF-8");
 		
+		System.out.println("paramcheck : postId = " + postId + " userId=" + userId + " content=" + content + " isA=" + isAnonymous);
+		
 		boardService.saveComment(postId, userId, content, isAnonymous);
 		
 		return "redirect:main";
+	}
+	
+	@PostMapping("/commentDelProc")
+	public String deleteComment(long commentId) {
+		return "";
 	}
 }
