@@ -6,11 +6,12 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<link href="/style/style.css" rel="stylesheet" type="text/css">
 <body>
 <%@ include file="../sub/top.jsp" %>
 ${post.postId }번 포스트임.
 <div align="center">
-	<table>
+	<table width="80%">
 		<tr>
 			<td colspan="4">[${post.category }] ${post.title }</td>
 		<tr>

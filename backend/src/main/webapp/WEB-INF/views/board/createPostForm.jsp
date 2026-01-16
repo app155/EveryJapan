@@ -20,7 +20,7 @@
 					<input type="text" name="category" placeholder="글 카테고리">
 				</td>
 				<td>
-					<input type="text" name="title" size="200" placeholder="제목을 입력해주세요.">
+					<input type="text" name="title" size="60" placeholder="제목을 입력해주세요.">
 				</td>
 			</tr>
 			<tr>

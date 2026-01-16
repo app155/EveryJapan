@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.globalin.board.model.CommentVO;
 import com.globalin.board.model.PostVO;
 import com.globalin.board.service.BoardService_;
 
@@ -49,13 +50,21 @@ public class BoardController {
 		request.setCharacterEncoding("UTF-8");
 		
 		PostVO post = boardService.getPost(postId);
-		
-		System.out.println(post.toString());
-		System.out.println(postId + "!@$@#%Q#$#^@$#^@#^#%$@^@$^$^@#%#DSFDASDSFAFSFASDFASDFASDFASF");
+		boardService.increasePostViewCount(postId);
+		List<CommentVO> comments = boardService.getAllCommentsInPost(postId);
 		
 		request.setAttribute("post", post);
-		System.out.println(post.toString());
+		request.setAttribute("comments", comments);
 		
 		return "/board/post";
+	}
+	
+	@PostMapping("/createCommentProc")
+	public String createComment(long postId, long userId, String content, boolean isAnonymous, HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
+		
+		boardService.saveComment(postId, userId, content, isAnonymous);
+		
+		return "redirect:main";
 	}
 }

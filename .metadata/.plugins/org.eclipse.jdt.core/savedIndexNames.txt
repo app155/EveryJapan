@@ -25,6 +25,7 @@ INDEX VERSION 1.131+C:\Users\kyeol\Documents\project_workspace\EveryJapan\.metad
 818432452.index
 1537505523.index
 3800733668.index
+4049596748.index
 1589182952.index
 362531996.index
 4184067940.index

@@ -42,7 +42,7 @@ public class PostDAO {
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
-			pstmt.setString(1, sql);
+			pstmt.setString(1, content);
 			pstmt.setLong(2, author);
 			pstmt.setString(3, title);
 			pstmt.setString(4, category);
@@ -173,5 +173,23 @@ public class PostDAO {
 		}
 		
 		return post;
+	}
+	
+	public boolean increaseViewCount(long postId) {
+		boolean result = false;
+		String sql = "update posts set view_count = view_count + 1 where post_id = ?";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, postId);
+			
+			pstmt.executeQuery();
+		}
+		
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }
