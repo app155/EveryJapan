@@ -21,6 +21,10 @@ public class UserService_ {
 		return userDAO.getUsernameByEmail(email);
 	}
 	
+	public String getUsernameByUserId(long userId) {
+		return userDAO.getUsernameById(userId);
+	}
+	
 	public boolean insert(String email, String password, String username, String university, String grade, String major, String studentId) {
 		return userDAO.insert(email, password, username, university, Integer.parseInt(grade), major, studentId);
 	}

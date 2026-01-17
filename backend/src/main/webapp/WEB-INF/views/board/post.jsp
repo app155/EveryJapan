@@ -26,6 +26,7 @@ ${post.postId }번 포스트임.
 		</tr>
 	</table>
 	<%@ include file="comment.jsp" %>
+	<%@ include file="commentList.jsp" %>
 </div>
 </body>
 </html>

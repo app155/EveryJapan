@@ -19,16 +19,6 @@
 				<td><input type="submit" value="댓글 작성">&nbsp;<input type="checkbox" name="isAnonymous">익명댓글</td>	
 			</tr>
 		</table>
-		<table>
-			<c:forEach var="comment" items="${comments }">
-				<tr>
-					<td>
-						${comment.userId }&nbsp;${comment.content }&nbsp;&nbsp;&nbsp;${comment.createdAt }
-						<input type="button" value="x" onclick="location.href='/board/commentDelProc'">
-					</td>
-				</tr>
-			</c:forEach>
-		</table>
 	</form>
 </div>
 </body>

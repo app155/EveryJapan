@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.globalin.board.model.CommentVO;
 import com.globalin.board.model.PostVO;
@@ -78,11 +79,31 @@ public class BoardController {
 		
 		boardService.saveComment(postId, userId, content, isAnonymous);
 		
-		return "redirect:main";
+		PostVO post = boardService.getPost(postId);
+		List<CommentVO> comments = boardService.getAllCommentsInPost(postId);
+		
+		request.setAttribute("post", post);
+		request.setAttribute("comments", comments);
+		
+		return "/board/post";
 	}
 	
-	@PostMapping("/commentDelProc")
-	public String deleteComment(long commentId) {
-		return "";
+	@PostMapping("/deleteCommentProc")
+	public String deleteComment(long commentId, long postId, HttpServletRequest request) throws UnsupportedEncodingException {
+		request.setCharacterEncoding("UTF-8");
+		System.out.println("COMMENTID: " + commentId);
+		
+		boardService.deleteComment(commentId);
+		request.setAttribute("postId", postId);
+		System.out.println("123123123123213= " + postId);
+		
+		
+		PostVO post = boardService.getPost(postId);
+		List<CommentVO> comments = boardService.getAllCommentsInPost(postId);
+		
+		request.setAttribute("post", post);
+		request.setAttribute("comments", comments);
+		
+		return "/board/post";
 	}
 }

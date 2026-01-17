@@ -117,6 +117,39 @@ public class UserDAO {
 		}
 	}
 	
+	public String getUsernameById(long userId) {
+		String username = null;
+		
+		String sql = "select username from users where user_id = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			
+			pstmt.setLong(1, userId);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				username = rs.getString("username");
+			}
+		}
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+		}
+		
+		return username;
+	}
+	
 	public Long getUserIdByEmail(String email) {
 		Long userId = null;
 		
