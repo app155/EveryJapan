@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.util.PatternMatchUtils;
 
 public class LoginCheckFilter implements Filter {
-	private static final String[] WHITE_LIST = { "/", "/test/*", "/css/**", "/js/**" }; 
+	private static final String[] WHITE_LIST = { "/", "/test/*", "/css/**", "/js/**", "/style/**" }; 
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

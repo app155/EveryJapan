@@ -1,5 +1,65 @@
 @charset "UTF-8";
 
+/* 공통 테이블 래퍼 (선택) */
+.table-wrap {
+	width: 100%;
+	max-width: 600px; /* 필요하면 조절 */
+	margin: 0 auto 24px; /* 가운데 정렬 + 아래 여백 */
+}
+
+/* 기본 테이블 스타일 */
+.clean-table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: #ffffff;
+	border-radius: 8px;
+	overflow: hidden; /* radius 깔끔하게 적용 */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	font-size: 14px;
+}
+
+/* 헤더 */
+.clean-table thead {
+	background: #f5f7fb;
+}
+
+.clean-table th {
+	padding: 10px 12px;
+	text-align: left;
+	font-weight: 600;
+	color: #333;
+	border-bottom: 1px solid #e3e6ef;
+}
+
+/* 바디 */
+.clean-table td {
+	padding: 8px 12px;
+	border-bottom: 1px solid #f0f2f7;
+	color: #444;
+}
+
+/* 홀수/짝수 줄 배경 */
+.clean-table tbody tr:nth-child(even) {
+	background-color: #fafbff;
+}
+
+/* hover 효과 */
+.clean-table tbody tr:hover {
+	background-color: #eef3ff;
+}
+
+/* 에러/메시지용 셀 (로그인 error 같은 곳에 사용 가능) */
+.clean-table .cell-error {
+	color: #dc3545;
+	font-weight: 600;
+}
+
+/* 버튼이 들어가는 셀 정렬 */
+.clean-table .cell-actions {
+	text-align: right;
+	white-space: nowrap;
+}
+
 /* 나중에고치자.... */
 .speech-bubble {
 	position: relative;

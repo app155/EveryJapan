@@ -50,6 +50,7 @@ public class BoardController {
 	public String getPost(long postId, HttpServletRequest request) throws UnsupportedEncodingException {
 		request.setCharacterEncoding("UTF-8");
 		
+		boardService.increasePostViewCount(postId);
 		PostVO post = boardService.getPost(postId);
 		List<CommentVO> comments = boardService.getAllCommentsInPost(postId);
 		

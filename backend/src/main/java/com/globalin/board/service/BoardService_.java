@@ -24,8 +24,11 @@ public class BoardService_ {
 	}
 	
 	public PostVO getPost(long postId) {
-		postDAO.increaseViewCount(postId);
 		return postDAO.getPost(postId);
+	}
+	
+	public boolean increasePostViewCount(long postId) {
+		return postDAO.increaseViewCount(postId);
 	}
 	
 	public List<CommentVO> getAllCommentsInPost(long postId) {

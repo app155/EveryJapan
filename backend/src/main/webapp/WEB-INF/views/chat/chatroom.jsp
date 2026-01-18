@@ -22,9 +22,9 @@ window.onload = function() {
 <button onclick="openModal()">인원 추가</button><br>
 <button onclick="ws.close()">연결 종료</button>
 
-<div id="myModal" class="modal">
-    <div class="modal-content">
-    		<form action="inviteToRoom" method="post">
+<form action="inviteToRoom" method="post">
+	<div id="myModal" class="modal">
+    		<div class="modal-content">
     			<h3>인원 추가</h3>
         		<p>
         			인원 추가하기<br>
@@ -33,9 +33,9 @@ window.onload = function() {
         		</p>
         		<input type="submit" value="인원 추가">
         		<input type="button" value="닫기" onclick="closeModal()">
-    		</form>
-    </div>
-</div>
+    		</div>
+	</div>
+</form>
 
 <script>
 	function openModal() {
