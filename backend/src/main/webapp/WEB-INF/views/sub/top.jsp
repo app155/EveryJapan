@@ -10,6 +10,7 @@
 <div align="right">
 	<button onclick="location.href='/test/main'">메인페이지</button>
 	<button onclick="location.href='/test/logoutProc'">로그아웃</button>
+	<button onclick="location.href='/timetable/main'">시간표</button>
 </div>
 </body>
 </html>

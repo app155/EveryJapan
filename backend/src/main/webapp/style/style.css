@@ -1,5 +1,51 @@
 @charset "UTF-8";
 
+/* 전체 레이아웃 */
+.timetable-layout {
+  display: flex;
+  height: 100vh;          /* 화면 전체 높이 */
+}
+
+/* 왼쪽 사이드바 */
+.timetable-sidebar {
+  width: 200px;           /* 사이드바 너비 */
+  background: #f3f4ff;
+  border-right: 1px solid #dde1ff;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.timetable-sidebar h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.timetable-sidebar button {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #c5c9f5;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+/* 오른쪽 시간표 영역 */
+.timetable-main {
+  flex: 1;                /* 남는 공간 전부 사용 */
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.timetable-board {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+
 /* 공통 테이블 래퍼 (선택) */
 .table-wrap {
 	width: 100%;
