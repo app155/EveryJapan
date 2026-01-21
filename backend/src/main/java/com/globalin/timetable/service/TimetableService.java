@@ -13,12 +13,18 @@ public class TimetableService {
 	@Autowired
 	TimetableDAO timetableDAO;
 	
+	public int getTableCount(long userId) {
+		System.out.println("아이디 !!!!!!!!!!!!: " + userId);
+		
+		return timetableDAO.getTablesCount(userId);
+	}
+	
 	public List<TimetableVO> getTables(long userId) {
 		return timetableDAO.getTimetables(userId);
 	}
 	
-	public void addTable(long userId) {
-		timetableDAO.insert(userId);
+	public void addTable(long userId, String name) {
+		timetableDAO.insert(userId, name);
 	}
 	
 	public void deleteTable(long tableId) {

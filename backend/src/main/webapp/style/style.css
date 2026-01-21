@@ -2,49 +2,143 @@
 
 /* 전체 레이아웃 */
 .timetable-layout {
-  display: flex;
-  height: 100vh;          /* 화면 전체 높이 */
+	display: flex;
+	height: 100vh; /* 화면 전체 높이 */
 }
 
 /* 왼쪽 사이드바 */
 .timetable-sidebar {
-  width: 200px;           /* 사이드바 너비 */
-  background: #f3f4ff;
-  border-right: 1px solid #dde1ff;
-  padding: 16px;
-  box-sizing: border-box;
+	width: 200px; /* 사이드바 너비 */
+	background: #f3f4ff;
+	border-right: 1px solid #dde1ff;
+	padding: 16px;
+	box-sizing: border-box;
 }
 
 .timetable-sidebar h2 {
-  margin-top: 0;
-  font-size: 18px;
+	margin-top: 0;
+	font-size: 18px;
 }
 
 .timetable-sidebar button {
-  display: block;
-  width: 100%;
-  margin-bottom: 8px;
-  padding: 8px 10px;
-  border: 1px solid #c5c9f5;
-  border-radius: 6px;
-  background: white;
-  cursor: pointer;
+	display: block;
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 8px 10px;
+	border: 1px solid #c5c9f5;
+	border-radius: 6px;
+	background: white;
+	cursor: pointer;
 }
 
 /* 오른쪽 시간표 영역 */
 .timetable-main {
-  flex: 1;                /* 남는 공간 전부 사용 */
-  padding: 16px;
-  box-sizing: border-box;
+	flex: 1; /* 남는 공간 전부 사용 */
+	padding: 16px;
+	box-sizing: border-box;
 }
 
+/* 시간표 전체 보드 */
 .timetable-board {
-  width: 100%;
-  height: 100%;
-  border: 1px solid #ddd;
-  background: #fff;
+    width: 100%;
+    height: calc(100vh - 120px);  /* 헤더+여백 뺀 나머지 */
+    overflow: auto;               /* 스크롤 가능 */
+    background: #fafbff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
 }
 
+.timetable-table {
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+	background: white;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	font-size: 13px;
+	table-layout: fixed; /* 셀 크기 고정 */
+}
+
+/* 헤더 (시간/요일) */
+.timetable-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 8px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    position: sticky;     /* 스크롤 시 고정 */
+    top: 0;
+    z-index: 10;
+}
+
+/* 요일 셀 */
+.timetable-table th:first-child {
+    background: #5a67d8;
+    width: 60px;          /* 요일 컬럼 좁게 */
+}
+
+/* 시간대 셀 */
+.timetable-table th[scope="col"] {
+    width: calc((100% - 60px) / 6);  /* 6일 기준 균등 */
+}
+
+/* 일반 셀 */
+.timetable-table td {
+    border: 1px solid #e2e8f0;
+    padding: 4px 6px;
+    vertical-align: top;
+    height: 60px;         /* 시간대별 높이 고정 */
+    position: relative;
+    overflow: hidden;
+}
+
+/* 과목 칸 */
+.subject-cell {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 4px;
+    padding: 6px 4px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.subject-cell:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102,126,234,0.3);
+}
+
+/* 빈 셀 */
+.empty-cell {
+    background: transparent;
+}
+
+/* 스크롤바 커스터마이징 */
+.timetable-board::-webkit-scrollbar {
+    width: 8px;
+}
+
+.timetable-board::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.timetable-board::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.timetable-board::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
 
 /* 공통 테이블 래퍼 (선택) */
 .table-wrap {

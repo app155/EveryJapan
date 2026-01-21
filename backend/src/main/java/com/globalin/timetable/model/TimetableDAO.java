@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -12,8 +13,41 @@ import com.dbcp.DBCPUtil;
 
 @Repository
 public class TimetableDAO {
+	public int getTablesCount(long userId) {
+		int count = 0;
+		
+		String sql = "select count(*) from timetables where user_id = ?";
+		ResultSet rs = null;
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, userId);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		}
+		
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return count;
+	}
+	
 	public List<TimetableVO> getTimetables(long userId) {
-		List<TimetableVO> timetables = null;
+		List<TimetableVO> timetables = new ArrayList<>();
 		String sql = "select * from timetables where user_id = ?";
 		ResultSet rs = null;
 		
@@ -23,7 +57,14 @@ public class TimetableDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
+				TimetableVO timetable = new TimetableVO();
 				
+				timetable.setTimetableId(rs.getLong("timetable_id"));
+				timetable.setUserId(rs.getLong("user_id"));
+				timetable.setName(rs.getString("name"));
+				timetable.setSemester(rs.getString("semester"));
+				
+				timetables.add(timetable);
 			}
 		}
 		
@@ -57,7 +98,7 @@ public class TimetableDAO {
 			if (rs.next()) {
 				timetable = new TimetableVO();
 				
-				timetable.setTimetableId(rs.getLong("table_id"));
+				timetable.setTimetableId(rs.getLong("timetable_id"));
 				timetable.setUserId(rs.getLong("user_id"));
 				timetable.setName(rs.getString("name"));
 				timetable.setSemester(rs.getString("semester"));
@@ -83,12 +124,13 @@ public class TimetableDAO {
 		return timetable;
 	}
 	
-	public void insert(long userId) {
-		String sql = "insert into timetables user_id values ?";
+	public void insert(long userId, String name) {
+		String sql = "insert into timetables (user_id, name) values (?, ?)";
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setLong(1, userId);
+			pstmt.setString(2, name);
 			pstmt.executeUpdate();
 		}
 		
@@ -98,7 +140,7 @@ public class TimetableDAO {
 	}
 	
 	public void update(long tableId, String tableName) {
-		String sql = "update timetables set name = ? where table_id = ?";
+		String sql = "update timetables set name = ? where timetable_id = ?";
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
@@ -113,7 +155,7 @@ public class TimetableDAO {
 	}
 	
 	public void delete(long tableId) {
-		String sql = "delete from timetables where table_id = ?";
+		String sql = "delete from timetables where timetable_id = ?";
 		
 		try (Connection con = DBCPUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {

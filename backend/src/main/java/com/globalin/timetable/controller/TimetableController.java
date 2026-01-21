@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.globalin.timetable.model.TimetableVO;
@@ -31,13 +32,13 @@ public class TimetableController {
 		return "timetable/main";
 	}
 	
-	@GetMapping("createTimetable")
-	public String createTimetable(HttpServletRequest request) {
+	@PostMapping("main")
+	public String createTimetable(long loginId, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		Long loginId = (Long)request.getAttribute("loginId");
 		
-		timetableService.addTable(loginId);
+		int count = timetableService.getTableCount(loginId);
+		timetableService.addTable(loginId, "시간표" + (count + 1));
 		
-		return "timetable/main";
+		return "redirect:/timetable/main";
 	}
 }
