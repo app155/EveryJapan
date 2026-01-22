@@ -371,6 +371,40 @@ CREATE TABLE blocked_users (
     UNIQUE KEY uk_user_blocked (user_id, blocked_user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+create table timetables (
+    timetable_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(50),
+    semester VARCHAR(30),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE subjects (
+  subject_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  university_id BIGINT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  day INT NOT NULL,
+  credit INT NOT NULL,
+  professor VARCHAR(50),
+  max_count INT NOT NULL,
+  current_count INT DEFAULT 0,
+  college VARCHAR(30),
+  lecture_type VARCHAR(20),
+  grade INT,
+  FOREIGN KEY (university_id) REFERENCES universities(university_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE timetables_subjects (
+  timetable_subject_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  timetable_id BIGINT,
+  subject_id BIGINT,
+  FOREIGN KEY (timetable_id) REFERENCES timetables(timetable_id),
+  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id),
+  UNIQUE KEY unique_timetable_subject (timetable_id, subject_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -379,3 +413,24 @@ select * from universities;
 select * from chat_rooms;
 select * from chat_members;
 select * from messages;
+select * from posts;
+
+insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "A대학과목1", "09:00", "11:00", 0, 2, "강교수", 30, "교양대학", "교양", 1);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "A대학전공과목1", "10:00", "12:00", 0, 2, "박교수", 50, "일본어대학", "전공", 2);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "노잼수업1", "13:00", "16:00", 3, 3, "최교수", 40, "교양대학", "교양", 1);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "개노잼수업1", "15:00", "18:00", 1, 3, "이교수", 20, "경영대학", "전공", 3);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "수업1", "14:00", "16:00", 4, 2, "김교수", 30, "일본어대학", "전공", 2);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "경영학수업1", "09:00", "12:00", 1, 3, "한교수", 50, "경영대학", "전공", 3);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "수업2", "13:00", "15:00", 2, 2, "송교수", 20, "사회과학대학", "전공", 1);
+ insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
+ values (1, "중복테스트용수업", "09:00", "17:00", 1, 3, "중복왕", 100, "사회과학대학", "교양", 1);
+
+ select * from subjects;
+ select * from timetables; 

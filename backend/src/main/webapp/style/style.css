@@ -140,6 +140,97 @@
     background: #94a3b8;
 }
 
+/* 상단 헤더: 제목 + 버튼 */
+.timetable-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.timetable-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.btn-add-subject {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(102,126,234,0.4);
+    transition: all 0.2s;
+}
+
+.btn-add-subject:hover {
+    transform: translateY(-1px);
+}
+
+/* 과목 검색 박스 */
+.subject-search-box {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    display: none;
+}
+
+.subject-search-box .search-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.subject-search-box input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+.subject-search-box select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+.subject-search-box button[type="submit"] {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    background: #0ea5e9;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 검색 결과 리스트 */
+.search-result {
+    margin-top: 10px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.search-result-item {
+    padding: 6px 4px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+.search-result-item button {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+
 /* 공통 테이블 래퍼 (선택) */
 .table-wrap {
 	width: 100%;

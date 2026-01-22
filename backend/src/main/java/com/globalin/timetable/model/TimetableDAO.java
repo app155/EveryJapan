@@ -7,12 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.dbcp.DBCPUtil;
 
 @Repository
 public class TimetableDAO {
+	@Autowired
+	private SubjectDAO subjectDAO;
+	
 	public int getTablesCount(long userId) {
 		int count = 0;
 		
@@ -98,12 +102,12 @@ public class TimetableDAO {
 			if (rs.next()) {
 				timetable = new TimetableVO();
 				
+				long tableId = rs.getLong("timetable_id");
 				timetable.setTimetableId(rs.getLong("timetable_id"));
 				timetable.setUserId(rs.getLong("user_id"));
 				timetable.setName(rs.getString("name"));
 				timetable.setSemester(rs.getString("semester"));
-				
-				
+				timetable.setSubjects(subjectDAO.getAllSubjectsInTimetable(tableId));
 			}
 		}
 		
