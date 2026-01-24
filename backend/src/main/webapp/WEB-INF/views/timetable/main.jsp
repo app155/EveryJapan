@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:set var="selectedTable"></c:set>
+<c:set var="selectedTable" value=""></c:set>
 <c:set var="times" value="${fn:split('09,10,11,12,13,14,15,16,17,18', ',')}"></c:set>
 <!DOCTYPE html>
 <html>
@@ -19,6 +19,11 @@
 		box.style.display = 'none';
 
 		document.querySelector('.timetable-main h2').textContent = selectTableName;
+		const btns = document.getElementsByClassName("btn-add-subject");
+		
+		for (const btn of btns) {
+			btn.style.display = 'block';
+		}
 
 		<c:set var="selectedTable" value="${tables.get(tableId) }"></c:set>
 		<c:set var="subjects" value="${selectedTable.subjects }"></c:set>
@@ -31,12 +36,73 @@
 		
 		<c:set var="temp" value="${tempSubjects }"></c:set>
 		
+		fetch('/timetable/' + tableId + '/subjects')
+		.then(res => res.json())
+		.then(subjects => {
+			drawTimetable(subjects);
+		})
+		.catch(err => console.error(err));
+	}
+	
+	function drawTimetable(subjects) {
+		const tbody = document.querySelector('.timetable-table tbody');
+		tbody.innerHTML = '';
 		
-	} 
+		const times = [09,10,11,12,13,14,15,16,17,18];
+		
+		times.forEach(time=> {
+			const tr = document.createElement('tr');
+			
+			const timeTd = document.createElement('td');
+			timeTd.textContent = time + ':00';
+			tr.appendChild(timeTd);
+			
+			for (let day = 0; day < 5; day++) {
+				const td = document.createElement('td');
+				
+				const subject = subjects.find(s => 
+				s.day === day && 
+				time >= parseInt(s.startTime.substring(0, 2)) && 
+				time < parseInt(s.endTime.substring(0, 2))
+				);
+				
+				if (subject) {
+					const div = document.createElement('div');
+					div.className = 'subject-cell';
+					console.log(subject.name);
+					console.log("time: " + time);
+					console.log("startTime: " + subject.startTime.substring(0, 2));
+					console.log(time == parseInt(subject.startTime.substring(0, 2)));
+					console.log("과목발견");
+					
+					if (time === parseInt(subject.startTime.substring(0, 2))) {
+						console.log("시작셀");
+						
+						div.innerHTML = 
+							subject.name + '<br>' + 
+							subject.startTime.substring(0, 5) + '~' + subject.endTime.substring(0, 5);
+					}
+					
+					td.append(div);
+				}
+				
+				tr.append(td);
+			}
+			
+			tbody.appendChild(tr);
+		});
+	}
 	
 	function toggleSearchBox() {
 		const box = document.getElementById('subject-search-box');
 	    box.style.display = 'block';
+	    const result = document.getElementById('search-result');
+	    
+	    fetch('/timetable/subjects')
+	    .then(res => res.json())
+	    .then(subjects => {
+	    		renderSearchResult(subjects)
+	    });
 	}
 	
 	function searchSubject(e) {
@@ -48,8 +114,70 @@
 	    console.log('검색:', keyword, day);
 	    // TODO: fetch('/timetable/searchSubject?...')로 Ajax 호출 후
 	    // #search-result 안에 과목 리스트 렌더링
-
+		
+	    fetch('/timetable/subjects')
+	    .then(res => res.json())
+	    .then(subjects => {
+	    		renderSearchResult(subjects)
+	    });
+	    
+	    
 	    return false;
+	}
+	
+	function renderSearchResult(subjects) {
+		const resultDiv = document.getElementById('search-result');
+		
+		if (subjects.length == 0) {
+			resultDiv.innerHTML = '<div><font color="red">검색 결과가 없습니다.</font></div>'
+			return;
+		}
+		
+		let html = '';
+		subjects.forEach(subject => {
+			console.log('과목명: ' + subject.name);
+			
+			html += 
+				'<div class="search-result-item">' +
+					/* '<div>' + */
+						'<button onclick="addToTimetable(' + subject.id + ')" + >' +
+							'<strong>' + subject.name + '</strong><br>' +
+							'<small>' +
+								(subject.professor || '미정') + '<br>' + 
+								subject.startTime.substring(0, 5) + ' ~ ' + subject.endTime.substring(0, 5) + '<br>' +
+								subject.credit + '학점' +
+							'</small>' +
+						'</button>' +
+					/* '</div>' + */
+				'</div>'
+			;
+		});
+		
+		resultDiv.innerHTML = html;
+	}
+	
+	function addToTimetable(subjectId) {
+		const currentTimetableId = '${selectedTable.timetableId }';
+		
+		fetch('/timetable/${selectedTable.timetableId}/subjects', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				subjectId: subjectId
+			})
+		})
+		.then(res => res.json())
+		.then(result => {
+			if (result.success) {
+				selectTimeTable('${selectedTable.timetableId}', '${selectedTable.name}');
+			}
+		})
+		.catch(err => {
+			console.error(err);
+			alert('시간표에 과목 추가 실패...');
+		});
 	}
 </script>
 </head>
@@ -70,7 +198,10 @@
 		<main class="timetable-main">
 			<div>
 				<h2 align="center">시간표를 선택해주세요.</h2>
-				<button type="button" class="btn-add-subject" onclick="toggleSearchBox()">과목 추가</button>
+				<div style="display: flex; gap: 10px;">
+					<button type="button" class="btn-add-subject" onclick="toggleSearchBox()">과목 추가</button>&nbsp;&nbsp;
+					<button type="button" class="btn-add-subject" onclick="saveTimeTable()">시간표 저장</button>
+				</div>
 			</div>
 			<div class="timetable-board">
 				<table class="timetable-table">

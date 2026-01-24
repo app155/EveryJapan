@@ -143,6 +143,21 @@ public class TimetableDAO {
 		}
 	}
 	
+	public void addSubjectToTimeTable(long timetableId, long subjectId) {
+		String sql = "insert into timetables_subjects (timetable_id, subject_id) values (?, ?)";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, timetableId);
+			pstmt.setLong(2, subjectId);
+			pstmt.executeUpdate();
+		}
+		
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+	}
+	
 	public void update(long tableId, String tableName) {
 		String sql = "update timetables set name = ? where timetable_id = ?";
 		

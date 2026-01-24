@@ -55,6 +55,7 @@
 	border-collapse: collapse;
 	background: white;
 	border-radius: 8px;
+	border-spacing: 0;
 	overflow: hidden;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 	font-size: 13px;
@@ -88,9 +89,10 @@
 /* 일반 셀 */
 .timetable-table td {
     border: 1px solid #e2e8f0;
-    padding: 4px 6px;
+    padding: 0;
     vertical-align: top;
     height: 60px;         /* 시간대별 높이 고정 */
+    box-sizing: border-box;
     position: relative;
     overflow: hidden;
 }
@@ -98,9 +100,17 @@
 /* 과목 칸 */
 .subject-cell {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: 0;
+    padding: 2px 4px;
+    
     color: white;
-    border-radius: 4px;
-    padding: 6px 4px;
+    width: 100%;
+    height: 100%;
     font-size: 11px;
     font-weight: 500;
     line-height: 1.2;
@@ -154,6 +164,7 @@
 }
 
 .btn-add-subject {
+	display: none;
     padding: 8px 14px;
     border: none;
     border-radius: 6px;
@@ -228,8 +239,16 @@
 .search-result-item button {
     padding: 4px 8px;
     font-size: 12px;
+    justify-content: space-between;
+    height: 100px;
+    background-color: white;
+    border: 0.2px;
+    flex: 1;
 }
 
+.search-result-item button:hover {
+	background-color: gray;
+}
 
 /* 공통 테이블 래퍼 (선택) */
 .table-wrap {

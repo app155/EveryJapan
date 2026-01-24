@@ -16,7 +16,7 @@ public class SubjectDAO {
 	public List<SubjectVO> getAllSubjectsInTimetable(long tableId) {
 		List<SubjectVO> subjects = new ArrayList<SubjectVO>();
 		
-		String sql = "select * from subjects where subject_id in (select subject_id from timetables_subjects where table_id where ?)";
+		String sql = "select * from subjects where subject_id in (select subject_id from timetables_subjects where timetable_id = ?)";
 		ResultSet rs = null;
 		
 		try (Connection con = DBCPUtil.getConnection();
@@ -88,6 +88,8 @@ public class SubjectDAO {
 				subject.setGrade(rs.getInt("grade"));
 				
 				subjects.add(subject);
+				
+				System.out.println("id: " + subject.getSubjectId() + "name: " + subject.getName());
 			}
 		}
 		catch (SQLException se) {
