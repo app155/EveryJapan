@@ -53,4 +53,8 @@ public class TimetableService {
 	public void addSubjectToTimeTable(long timetableId, long subjectId) {
 		timetableDAO.addSubjectToTimeTable(timetableId, subjectId);
 	}
+	
+	public void deleteSubjectToTimeTable(long timetableId, long subjectId) {
+		timetableDAO.deleteSubjectToTimeTable(timetableId, subjectId);
+	}
 }

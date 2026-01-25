@@ -186,4 +186,19 @@ public class TimetableDAO {
 			se.printStackTrace();
 		}
 	}
+	
+	public void deleteSubjectToTimeTable(long timetableId, long subjectId) {
+		String sql = "delete from timetables_subjects where timetable_id = ? and subject_id = ?";
+		
+		try (Connection con = DBCPUtil.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setLong(1, timetableId);
+			pstmt.setLong(2, subjectId);
+			pstmt.executeUpdate();
+		}
+		
+		catch (SQLException se) {
+			se.printStackTrace();
+		}
+	}
 }

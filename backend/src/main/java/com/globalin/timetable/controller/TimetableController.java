@@ -60,10 +60,12 @@ public class TimetableController {
 		return timetableService.getSubjectsInTimetable(timetableId);
 	}
 	
-	@PostMapping("/{timetableId}/subjects")
+	@PostMapping("/{timetableId}/subject")
 	@ResponseBody
-	public Map<String, Object> addSubjectToTimeTable(@PathVariable long timetableId, @RequestBody Map<String, Long> request) {
+	public Map<String, Object> addSubjectToTimeTable(@PathVariable("timetableId") long timetableId, @RequestBody Map<String, Long> request) {
 		Long subjectId = request.get("subjectId");
+		
+	    System.out.println("받은 데이터: " + request);
 		
 		try {
 			timetableService.addSubjectToTimeTable(timetableId, subjectId);
@@ -74,6 +76,22 @@ public class TimetableController {
 	    } 
 		catch (Exception e) {
 	        return Map.of("success", false, "message", "추가 실패");
+	    }
+	}
+	
+	@PostMapping("/{timetableId}/delSubject")
+	@ResponseBody
+	public Map<String, Object> deleteSubjectToTimeTable(@PathVariable("timetableId") long timetableId, @RequestBody Map<String, Long> request) {
+		Long subjectId = request.get("subjectId");
+		
+	    System.out.println("받은 데이터: " + request);
+		
+		try {
+			timetableService.deleteSubjectToTimeTable(timetableId, subjectId);
+			return Map.of("success", true, "message", "삭제 성공");
+		}
+		catch (Exception e) {
+	        return Map.of("success", false, "message", "삭제 실패");
 	    }
 	}
 }

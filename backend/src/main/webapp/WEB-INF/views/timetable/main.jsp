@@ -11,9 +11,12 @@
 <title>시간표</title>
 <link href="/style/style.css" rel="stylesheet">
 <script>
+	let selectTableId = null;
+	let selectTableName = null;
+	
 	function selectTable(tableId, tableName) {
-		let selectTableId = tableId;
-		let selectTableName = tableName;
+		selectTableId = tableId;
+		selectTableName = tableName;
 		
 		const box = document.getElementById('subject-search-box');
 		box.style.display = 'none';
@@ -69,6 +72,7 @@
 				if (subject) {
 					const div = document.createElement('div');
 					div.className = 'subject-cell';
+					div.onclick = () => deleteToTimetable(subject.subjectId);
 					console.log(subject.name);
 					console.log("time: " + time);
 					console.log("startTime: " + subject.startTime.substring(0, 2));
@@ -140,7 +144,7 @@
 			html += 
 				'<div class="search-result-item">' +
 					/* '<div>' + */
-						'<button onclick="addToTimetable(' + subject.id + ')" + >' +
+						'<button onclick="addToTimetable(' + subject.subjectId + ')">' +
 							'<strong>' + subject.name + '</strong><br>' +
 							'<small>' +
 								(subject.professor || '미정') + '<br>' + 
@@ -157,9 +161,12 @@
 	}
 	
 	function addToTimetable(subjectId) {
-		const currentTimetableId = '${selectedTable.timetableId }';
+		const currentTimetableId = selectTableId;
 		
-		fetch('/timetable/${selectedTable.timetableId}/subjects', {
+		console.log('선택된 테이블 아이디: ' + currentTimetableId);
+		console.log('선택된 테이블 이름: ' + selectTableName);
+		
+		fetch('/timetable/' + selectTableId + '/subject', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -171,12 +178,34 @@
 		.then(res => res.json())
 		.then(result => {
 			if (result.success) {
-				selectTimeTable('${selectedTable.timetableId}', '${selectedTable.name}');
+				selectTable(selectTableId, selectTableName);
 			}
 		})
 		.catch(err => {
 			console.error(err);
 			alert('시간표에 과목 추가 실패...');
+		});
+	}
+	
+	function deleteToTimetable(subjectId) {
+		fetch('/timetable/' + selectTableId + '/delSubject', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				subjectId: subjectId
+			})
+		})
+		.then(res => res.json())
+		.then(result => {
+			if (result.success) {
+				selectTable(selectTableId, selectTableName);
+			}
+		})
+		.catch(err => {
+			console.error(err);
+			alert('시간표에 과목 삭제 실패...');
 		});
 	}
 </script>
