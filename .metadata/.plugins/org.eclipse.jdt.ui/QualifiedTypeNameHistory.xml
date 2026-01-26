@@ -16,7 +16,6 @@
     <fullyQualifiedTypeName name="com.globalin.chat.model.RoomType"/>
     <fullyQualifiedTypeName name="com.globalin.chat.model.MessageVO"/>
     <fullyQualifiedTypeName name="com.globalin.chat.model.ChatRoomVO"/>
-    <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="com.globalin.chat.model.MessageDAO"/>
     <fullyQualifiedTypeName name="org.springframework.stereotype.Component"/>
     <fullyQualifiedTypeName name="com.globalin.chat.service.ChatService"/>
@@ -60,4 +59,5 @@
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PathVariable"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
     <fullyQualifiedTypeName name="org.springframework.dao.DuplicateKeyException"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
 </qualifiedTypeNameHistroy>

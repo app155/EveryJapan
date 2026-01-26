@@ -9,8 +9,8 @@
 <link href="/style/style.css?after" rel="stylesheet">
 </head>
 <body>
-	<form action="loginProc" method="post">
-		<div class="table-wrap">
+	<div class="table-wrap">
+		<form action="loginProc" method="post">
 			<table class="clean-table">
 				<tr>
 					<td colspan="2">이메일: <input type="email" name="email" value="${email }"></td>
@@ -28,7 +28,7 @@
 					<td><input type="submit" name="btn" value="register"></td>
 				</tr>
 			</table>
-		</div>
-	</form>
+		</form>
+	</div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.globalin.timetable.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,13 +70,22 @@ public class TimetableController {
 		
 		try {
 			timetableService.addSubjectToTimeTable(timetableId, subjectId);
-			return Map.of("success", true, "message", "추가 성공");
+			Map<String, Object> result = new HashMap<>(); 
+			result.put("success", true);
+			result.put("message", "추가 성공");
+			return result;
 		}
 		catch (DuplicateKeyException e) {
-			return Map.of("success", false, "message", "이미 추가된 과목");
+			Map<String, Object> result = new HashMap<>(); 
+			result.put("success", false);
+			result.put("message", "이미 추가된 과목");
+			return result;
 	    } 
 		catch (Exception e) {
-	        return Map.of("success", false, "message", "추가 실패");
+	        Map<String, Object> result = new HashMap<>(); 
+			result.put("success", false);
+			result.put("message", "추가 실패");
+			return result;
 	    }
 	}
 	
@@ -88,10 +98,16 @@ public class TimetableController {
 		
 		try {
 			timetableService.deleteSubjectToTimeTable(timetableId, subjectId);
-			return Map.of("success", true, "message", "삭제 성공");
+			Map<String, Object> result = new HashMap<>(); 
+			result.put("success", true);
+			result.put("message", "삭제 성공");
+			return result;
 		}
 		catch (Exception e) {
-	        return Map.of("success", false, "message", "삭제 실패");
+	        Map<String, Object> result = new HashMap<>(); 
+			result.put("success", false);
+			result.put("message", "삭제 실패");
+			return result;
 	    }
 	}
 }

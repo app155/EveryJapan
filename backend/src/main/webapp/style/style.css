@@ -252,20 +252,25 @@
 
 /* 공통 테이블 래퍼 (선택) */
 .table-wrap {
+	position: fixed;
+	height: 100%;
 	width: 100%;
-	max-width: 600px; /* 필요하면 조절 */
+	top: 0;
+	left: 0;
 	margin: 0 auto 24px; /* 가운데 정렬 + 아래 여백 */
 }
 
 /* 기본 테이블 스타일 */
 .clean-table {
-	width: 100%;
+	width: 40%;
+	height: 100%;
 	border-collapse: collapse;
 	background-color: #ffffff;
 	border-radius: 8px;
 	overflow: hidden; /* radius 깔끔하게 적용 */
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	font-size: 14px;
+	margin: 30% auto;
 }
 
 /* 헤더 */
