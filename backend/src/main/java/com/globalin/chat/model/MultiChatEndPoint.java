@@ -2,6 +2,7 @@ package com.globalin.chat.model;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +12,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalin.chat.service.ChatService;
 import com.globalin.config.HttpSessionConfigurator;
 
@@ -18,6 +20,7 @@ import com.globalin.config.HttpSessionConfigurator;
 public class MultiChatEndPoint {
 	// 방ID => 클라이언트 리스트 맵
 	private static final Map<Long, Set<Session>> rooms = new ConcurrentHashMap<>();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
     public static ChatService chatService;
 	
@@ -54,13 +57,20 @@ public class MultiChatEndPoint {
 		String broadcastMsg = username + ": " + message;
         
 		MultiChatEndPoint.chatService.saveMsg(roomId, loginId, message);
+		Map<String, Object> msg = new HashMap<>();
+		msg.put("content", message);
+		msg.put("senderId", loginId);
+		
 		
 		// 해당 방 클라이언트들에게만 전송
 		rooms.getOrDefault(roomId, Collections.emptySet()).stream()
 			.filter(Session::isOpen)
 			.forEach(client -> {
 				try {
-					client.getBasicRemote().sendText(broadcastMsg);
+					String json = objectMapper.writeValueAsString(msg);
+					client.getBasicRemote().sendText(json);
+					
+					//client.getBasicRemote().sendText(broadcastMsg);
 				} 
 				catch (IOException e) {
 					e.printStackTrace();

@@ -432,5 +432,9 @@ insert into subjects (university_id, name, start_time, end_time, day, credit, pr
  insert into subjects (university_id, name, start_time, end_time, day, credit, professor, max_count, college, lecture_type, grade)
  values (1, "중복테스트용수업", "09:00", "17:00", 1, 3, "중복왕", 100, "사회과학대학", "교양", 1);
 
+insert into timetables_subjects (timetable_id, subject_id) values (16, 1);
+insert into timetables_subjects (timetable_id, subject_id) values (16, 3);
+
  select * from subjects;
  select * from timetables; 
+ select * from timetables_subjects;

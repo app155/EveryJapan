@@ -12,11 +12,11 @@ roomId ${roomId } 채팅방입니다.
 
 <script>
 window.onload = function() {
-    connectToRoom(${roomId });
+    connectToRoom(${roomId }, ${loginId });
 };
 </script>
 <h2>🗣️ 실시간 채팅(ws://localhost:8080/chat)</h2> <!-- 앞의 ws://가 꼭 붙어야 함 -->
-<div id="messages"></div>
+<div id="messages" class="chat-container"></div>
 <input id="input" type="text" placeholder="메시지 입력...." onkeypress="if(event.keyCode==13)sendMessage()">
 <button onclick="sendMessage()">전송</button>
 <button onclick="openModal()">인원 추가</button><br>
@@ -51,13 +51,13 @@ window.onload = function() {
 	// 채팅 영역을 찾아야함.
 	var messages = document.getElementById('messages');
 	
-	function addMessage(msg) {
-		messages.innerHTML += 
-			'<div class="message.me">' + 
-				'<div class="speech-bubble speech-bubble-right">' + 
-					'<p align="right">' + new Date().toLocaleTimeString() + '|' + msg + '</p>' + 
-				'</div>' + 
-			'</div>';
+	function addMessage(content, isMe) {
+	    const messages = document.getElementById('messages');
+	    const messageDiv = document.createElement('div');
+	    messageDiv.className = `message \${isMe ? 'sent' : 'received'}`;
+	    messageDiv.innerHTML = `<div class="speech-bubble \${isMe ? 'right' : 'left'}">\${content}</div>`;
+	    messages.appendChild(messageDiv);
+	    messages.scrollTop = messages.scrollHeight;
 		messages.scrollTop = messages.scrollHeight;
 	}
 	
@@ -77,7 +77,7 @@ window.onload = function() {
 		}
 	}
 	
-	function connectToRoom(roomId) {
+	function connectToRoom(roomId, myId) {
 		// 이미 연결 시 먼저 연결된 방 연결 해제
 		if (ws != null && ws.readyState == WebSocket.OPEN) {
 			ws.close();
@@ -91,7 +91,8 @@ window.onload = function() {
 		};
 		
 		ws.onmessage = function(event) {
-			addMessage(event.data);
+			const msg = JSON.parse(event.data);
+			addMessage(msg.content, msg.senderId == myId);
 		};
 		
 		ws.onclose = function() {

@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:set var="selectedTable" value=""></c:set>
 <c:set var="times" value="${fn:split('09,10,11,12,13,14,15,16,17,18', ',')}"></c:set>
 <!DOCTYPE html>
 <html>
@@ -28,16 +27,8 @@
 			btn.style.display = 'block';
 		}
 
-		<c:set var="selectedTable" value="${tables.get(tableId) }"></c:set>
-		<c:set var="subjects" value="${selectedTable.subjects }"></c:set>
-		
 		let tempSubjects = [];
 		
-		<c:forEach var="subject" items="${subjects }">
-			tempSubjects.push(${subject });
-		</c:forEach>
-		
-		<c:set var="temp" value="${tempSubjects }"></c:set>
 		
 		fetch('/timetable/' + tableId + '/subjects')
 		.then(res => res.json())
@@ -245,24 +236,7 @@
 	   						<tr>
         							<td>${time }:00</td>
         							<c:forEach var="day" begin="0" end="4">
-        								<td>
-        									<c:forEach var="subject" items="${tempSubjects }">
-        										<c:if test="${subject.day == day 
-    														&& time == subject.startTime.toLocalTime().getHour() }">
-        											<div class="subject-cell">
-        												${subject.name }<br>
-        												${subject.startTime }~${subject.endTime }
-        											</div>
-        										</c:if>
-        										<c:if test="${subject.day == day 
-    														&& time > subject.startTime.toLocalTime().getHour()
-    														&& time <= subject.endTime.toLocalTime().getHour() }">
-        											<div class="subject-cell">
-        												
-        											</div>
-        										</c:if>
-        									</c:forEach>
-       								</td>
+        								<td></td>
         							</c:forEach>
 	       					</tr>
        					</c:forEach>

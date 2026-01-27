@@ -39,8 +39,12 @@
 					<td>학번:</td>
 					<td><input type="text" name="studentId"></td>
 				</tr>
+				<tr>
+					<td align="right" colspan="2">
+						<input type="submit" value="회원가입">
+					</td>
+				</tr>
 			</table>
-			<input type="submit" value="회원가입">
 		</div>
 	</form>
 </body>
